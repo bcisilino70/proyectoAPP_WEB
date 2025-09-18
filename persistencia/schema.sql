@@ -4,30 +4,26 @@
 -- tables
 -- Table: CLIENTE
 CREATE TABLE CLIENTE (
-    id int  NOT NULL,
+    id SERIAL PRIMARY KEY
     nombre varchar(20)  NOT NULL,
     apellido varchar(20)  NOT NULL,
-    CONSTRAINT CLIENTE_pk PRIMARY KEY (id)
+    email varchar(50) NOT NULL
 );
 
 -- Table: RESENA
 CREATE TABLE RESENA (
-    id int  NOT NULL,
-    titulo varchar(25)  NOT NULL,
-    descripcion varchar(50)  NOT NULL,
-    nota int  NOT NULL,
-    fecha timestamp  NOT NULL,
-    CLIENTE_id int  NOT NULL,
-    CONSTRAINT RESENA_pk PRIMARY KEY (id,CLIENTE_id)
-);
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(25) NOT NULL,
+    descripcion VARCHAR(50) NOT NULL,
+    nota INT NOT NULL,
+    fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    cliente_id INT NOT NULL,
+)
 
--- foreign keys
--- Reference: RESENA_CLIENTE (table: RESENA)
 ALTER TABLE RESENA ADD CONSTRAINT RESENA_CLIENTE
-    FOREIGN KEY (CLIENTE_id)
-    REFERENCES CLIENTE (id)  
-    NOT DEFERRABLE 
+    FOREIGN KEY (cliente_id)
+    REFERENCES CLIENTE (id)
+    NOT DEFERRABLE
     INITIALLY IMMEDIATE
-;
 
 -- End of file.
