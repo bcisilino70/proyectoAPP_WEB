@@ -7,6 +7,8 @@ CREATE TABLE CLIENTE (
     id SERIAL PRIMARY KEY
     nombre varchar(20)  NOT NULL,
     apellido varchar(20)  NOT NULL,
+    usuario varchar(20) NOT NULL,
+    pass varchar(20) NOT NULL,
     email varchar(50) NOT NULL
 );
 
