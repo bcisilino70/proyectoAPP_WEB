@@ -4,7 +4,7 @@
 -- tables
 -- Table: CLIENTE
 CREATE TABLE CLIENTE (
-    id SERIAL PRIMARY KEY
+    id SERIAL PRIMARY KEY,
     nombre varchar(20)  NOT NULL,
     apellido varchar(20)  NOT NULL,
     usuario varchar(20) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE RESENA (
     nota INT NOT NULL,
     fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     cliente_id INT NOT NULL
-)
+);
 
 ALTER TABLE RESENA ADD CONSTRAINT RESENA_CLIENTE
     FOREIGN KEY (cliente_id)
