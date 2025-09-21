@@ -9,17 +9,17 @@ CREATE TABLE CLIENTE (
     apellido varchar(20)  NOT NULL,
     usuario varchar(20) NOT NULL,
     pass varchar(20) NOT NULL,
-    email varchar(50) NOT NULL
+    email varchar(50) NOT NULL UNIQUE
 );
 
 -- Table: RESENA
 CREATE TABLE RESENA (
     id SERIAL PRIMARY KEY,
-    titulo VARCHAR(25) NOT NULL,
+    titulo VARCHAR(25) NOT NULL UNIQUE,
     descripcion VARCHAR(50) NOT NULL,
     nota INT NOT NULL,
     fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    cliente_id INT NOT NULL,
+    cliente_id INT NOT NULL
 )
 
 ALTER TABLE RESENA ADD CONSTRAINT RESENA_CLIENTE
