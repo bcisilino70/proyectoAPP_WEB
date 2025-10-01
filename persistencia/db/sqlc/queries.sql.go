@@ -45,17 +45,16 @@ func (q *Queries) CreateCliente(ctx context.Context, arg CreateClienteParams) (C
 }
 
 const createResena = `-- name: CreateResena :one
-INSERT INTO RESENA (titulo,descripcion,nota,fecha,cliente_id)
-VALUES ($1,$2,$3,$4,$5)
+INSERT INTO RESENA (titulo,descripcion,nota,cliente_id)
+VALUES ($1,$2,$3,$4)
 RETURNING id,titulo,descripcion,nota,fecha,cliente_id
 `
 
 type CreateResenaParams struct {
-	Titulo      string    `json:"titulo"`
-	Descripcion string    `json:"descripcion"`
-	Nota        int32     `json:"nota"`
-	Fecha       time.Time `json:"fecha"`
-	ClienteID   int32     `json:"cliente_id"`
+	Titulo      string `json:"titulo"`
+	Descripcion string `json:"descripcion"`
+	Nota        int32  `json:"nota"`
+	ClienteID   int32  `json:"cliente_id"`
 }
 
 // Pensar como se coloca el ID del cliente que hace la resena. No parece ser un problema para las queries.
@@ -64,7 +63,6 @@ func (q *Queries) CreateResena(ctx context.Context, arg CreateResenaParams) (Res
 		arg.Titulo,
 		arg.Descripcion,
 		arg.Nota,
-		arg.Fecha,
 		arg.ClienteID,
 	)
 	var i Resena
@@ -99,6 +97,73 @@ WHERE (titulo = $1)
 func (q *Queries) DeleteResena(ctx context.Context, titulo string) error {
 	_, err := q.db.ExecContext(ctx, deleteResena, titulo)
 	return err
+}
+
+const getCliente = `-- name: GetCliente :one
+SELECT nombre, apellido, usuario, email
+FROM CLIENTE
+WHERE (id = $1)
+`
+
+type GetClienteRow struct {
+	Nombre   string `json:"nombre"`
+	Apellido string `json:"apellido"`
+	Usuario  string `json:"usuario"`
+	Email    string `json:"email"`
+}
+
+// Permite traer un cliente
+func (q *Queries) GetCliente(ctx context.Context, id int32) (GetClienteRow, error) {
+	row := q.db.QueryRowContext(ctx, getCliente, id)
+	var i GetClienteRow
+	err := row.Scan(
+		&i.Nombre,
+		&i.Apellido,
+		&i.Usuario,
+		&i.Email,
+	)
+	return i, err
+}
+
+const listCliente = `-- name: ListCliente :many
+SELECT nombre, apellido, usuario, email
+FROM CLIENTE
+`
+
+type ListClienteRow struct {
+	Nombre   string `json:"nombre"`
+	Apellido string `json:"apellido"`
+	Usuario  string `json:"usuario"`
+	Email    string `json:"email"`
+}
+
+// Permite mostrar todos los clientes
+func (q *Queries) ListCliente(ctx context.Context) ([]ListClienteRow, error) {
+	rows, err := q.db.QueryContext(ctx, listCliente)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListClienteRow
+	for rows.Next() {
+		var i ListClienteRow
+		if err := rows.Scan(
+			&i.Nombre,
+			&i.Apellido,
+			&i.Usuario,
+			&i.Email,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listResena = `-- name: ListResena :one
