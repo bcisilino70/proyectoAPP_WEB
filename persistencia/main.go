@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	connStr := "host=localhost port=5433 user=app_user password=app_pass dbname=app_db sslmode=disable" // A tratar el tema de seguridad.
+	connStr := "host=localhost port=5432 user=app_user password=app_pass dbname=app_db sslmode=disable" // A tratar el tema de seguridad.
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("Error al conectar a la base de datos: %v", err)

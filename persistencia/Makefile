@@ -8,7 +8,7 @@ DB_USER = app_user
 DB_PASSWORD = app_pass
 DB_ADMIN = app_admin
 ADMIN_PASSWORD = admin_pass
-DB_PORT = 5433
+DB_PORT = 5432
 
 .PHONY: help all setup run test clean destroy
 
@@ -27,11 +27,11 @@ help:
 all:
 	@echo "🎯 INICIANDO FLUJO COMPLETO AUTOMÁTICO..."
 	@echo "=========================================="
-	$(MAKE) setup
+# $(MAKE) setup esto esta mal porque make run llama a setup. 
 	@echo ""
 	$(MAKE) run
 	@echo ""
-	$(MAKE) test
+#	$(MAKE) test no hay test
 	@echo ""
 	$(MAKE) destroy
 	@echo "✅ FLUJO COMPLETADO EXITOSAMENTE!"
@@ -47,7 +47,7 @@ setup:
 		-e POSTGRES_USER=$(DB_USER) \
 		-e POSTGRES_PASSWORD=$(DB_PASSWORD) \
 		-p $(DB_PORT):5432 \
-		-d postgres:latest
+		-d postgres:13
 	
 	@# 2. Esperar que PostgreSQL esté listo
 	@echo "2. Esperando que PostgreSQL esté listo..."
@@ -55,10 +55,10 @@ setup:
 	
 	@# 3. Crear usuario admin y otorgar privilegios
 	@echo "3. Configurando usuario administrador..."
-	docker exec -i $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) <<EOF
-	CREATE USER $(DB_ADMIN) WITH PASSWORD '$(ADMIN_PASSWORD)';
-	GRANT ALL PRIVILEGES ON DATABASE $(DB_NAME) TO $(DB_ADMIN);
-	EOF
+	echo "CREATE USER $(DB_ADMIN) WITH PASSWORD '$(ADMIN_PASSWORD)';" | \
+	docker exec -i $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME)
+	echo "GRANT ALL PRIVILEGES ON DATABASE $(DB_NAME) TO $(DB_ADMIN);" | \
+	docker exec -i $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME)
 	
 	@# 4. Ejecutar schema.sql
 	@echo "4. Creando tablas con schema.sql..."
