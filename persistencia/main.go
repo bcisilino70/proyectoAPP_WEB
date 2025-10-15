@@ -54,13 +54,6 @@ func main() {
 		log.Fatalf("Error al modificar cliente: %v", err)
 	}
 
-	// --- DELETE CLIENTE -- DELETE
-	err = queries.DeleteCliente(ctx, crearUsuario.Usuario)
-	if err != nil {
-		log.Fatalf("Error al eliminar cliente: %v", err)
-	}
-	fmt.Println("Cliente eliminado correctamente")
-
 	// --- OPERACIONES CRUD SOBRE CLIENTE --- //
 
 	// --- CREAR RESENA -- CREATE
@@ -100,4 +93,10 @@ func main() {
 	}
 	fmt.Println("Resena eliminada correctamente")
 
+	// --- DELETE CLIENTE -- DELETE
+	err = queries.DeleteCliente(ctx, crearUsuario.Usuario)
+	if err != nil {
+		log.Fatalf("Error al eliminar cliente: %v", err)
+	}
+	fmt.Println("Cliente eliminado correctamente")
 }
