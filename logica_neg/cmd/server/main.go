@@ -37,14 +37,31 @@ func main() {
 	_ = queries
 
 	// 2. Configuración del Servidor HTTP
-	// Aquí es donde configurarías tus handlers y el router HTTP,
-	// pasando la instancia 'queries' a los handlers que la necesiten.
-	// Por ejemplo:
-	//
-	// router := http.NewServeMux()
-	// api := &API{db: queries} // Suponiendo que tienes una struct para tus handlers
-	// router.HandleFunc("/entidad", api.ListEntidadesHandler)
+	/*
+		POST /<entidades>: Debe recibir datos en formato JSON, validarlos (ej. que el título no esté vacío), usar el
+		método Create... de sqlc para guardarlos en la base de datos y devolver el nuevo objeto como JSON con
+		estado 201.
+	*/
 
+	/*
+		GET /<entidades>: Debe usar el método List... de sqlc para obtener todos los registros y devolverlos
+		como un array JSON.
+	*/
+
+	/*
+		GET /<entidades>/{id}: Debe obtener el ID de la URL, buscar el registro con Get... y devolverlo. Si no
+		existe, debe devolver un 404.
+	*/
+
+	/*
+		PUT /<entidades>/{id}: Debe recibir datos JSON, validarlos, y actualizar el registro correspondiente usando
+		Update....
+	*/
+
+	/*
+		DELETE /<entidades>/{id}: Debe eliminar el registro usando Delete... y devolver un estado 204 (No
+		Content).
+	*/
 	log.Println("Iniciando servidor en http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatalf("No se pudo iniciar el servidor: %v", err)
