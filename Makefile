@@ -62,7 +62,7 @@ setup:
 	
 	@# 4. Ejecutar schema.sql
 	@echo "4. Creando tablas con schema.sql..."
-	docker exec -i $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) < db/schema/schema.sql
+	docker exec -i $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) < persistencia/db/schema/schema.sql
 	
 	@echo "✅ CONFIGURACIÓN COMPLETADA!"
 	@echo "   Contenedor: $(CONTAINER_NAME)"
@@ -70,10 +70,16 @@ setup:
 	@echo "   Puerto: $(DB_PORT)"
 
 # Ejecutar la aplicación
-run: setup
-	@echo "🚀 EJECUTANDO APLICACIÓN..."
+run_datos: setup
+	@echo "🚀 EJECUTANDO APLICACIÓN NIVEL CAPA DE DATOS..."
 	@echo "=========================================="
-	go run main.go
+	go run ./persistencia/main.go
+	@echo "✅ EJECUCIÓN COMPLETADA!"
+
+run_logica: setup
+	@echo "🚀 EJECUTANDO APLICACIÓN NIVEL CAPA DE LOGICA DE NEGOCIOS..."
+	@echo "=========================================="
+	go run ./logica_neg/cmd/server/main.go
 	@echo "✅ EJECUCIÓN COMPLETADA!"
 
 # Ejecutar tests

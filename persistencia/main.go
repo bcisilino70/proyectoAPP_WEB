@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	sqlc "persistencia/db/sqlc"
+	sqlc "proyectoAPP_WEB/persistencia/db/sqlc"
 
 	_ "github.com/lib/pq"
 )

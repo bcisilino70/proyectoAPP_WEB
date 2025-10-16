@@ -1,4 +1,4 @@
-module persistencia
+module proyectoAPP_WEB
 
 go 1.22.2
 
