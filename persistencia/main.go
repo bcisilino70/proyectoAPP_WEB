@@ -72,7 +72,7 @@ func main() {
 	// --- GET RESENAS --
 	resenas, err := queries.ListResenas(ctx, crearUsuario.ID)
 	if err != nil {
-		log.Fatalf("Error al crear resena: %v", err)
+		log.Fatalf("Error al listar resenas de un usuario: %v", err)
 	}
 	fmt.Printf("Resenas de un usuario: %+v\n", resenas)
 
@@ -85,18 +85,23 @@ func main() {
 		log.Fatalf("Error al modificar resena: %v", err)
 	}
 	fmt.Println("Resena modificada correctamente")
+	/*
+	   // --- DELETE RESENA -- DELETE
+	   err = queries.DeleteResena(ctx, crearResena.Titulo)
 
-	// --- DELETE RESENA -- DELETE
-	err = queries.DeleteResena(ctx, crearResena.Titulo)
-	if err != nil {
-		log.Fatalf("Error al eliminar resena: %v", err)
-	}
-	fmt.Println("Resena eliminada correctamente")
+	   	if err != nil {
+	   		log.Fatalf("Error al eliminar resena: %v", err)
+	   	}
 
-	// --- DELETE CLIENTE -- DELETE
-	err = queries.DeleteCliente(ctx, crearUsuario.Usuario)
-	if err != nil {
-		log.Fatalf("Error al eliminar cliente: %v", err)
-	}
-	fmt.Println("Cliente eliminado correctamente")
+	   fmt.Println("Resena eliminada correctamente")
+
+	   // --- DELETE CLIENTE -- DELETE
+	   err = queries.DeleteCliente(ctx, crearUsuario.Usuario)
+
+	   	if err != nil {
+	   		log.Fatalf("Error al eliminar cliente: %v", err)
+	   	}
+
+	   fmt.Println("Cliente eliminado correctamente")
+	*/
 }

@@ -27,13 +27,12 @@ help:
 all:
 	@echo "🎯 INICIANDO FLUJO COMPLETO AUTOMÁTICO..."
 	@echo "=========================================="
-# $(MAKE) setup esto esta mal porque make run llama a setup. 
-	@echo ""
-	$(MAKE) run
-	@echo ""
-#	$(MAKE) test no hay test
 	@echo ""
 	$(MAKE) destroy
+	@echo ""
+	$(MAKE) run_datos
+	@echo ""
+	$(MAKE) run_logica
 	@echo "✅ FLUJO COMPLETADO EXITOSAMENTE!"
 
 # Configuración inicial
@@ -76,7 +75,7 @@ run_datos: setup
 	go run ./persistencia/main.go
 	@echo "✅ EJECUCIÓN COMPLETADA!"
 
-run_logica: setup
+run_logica: 
 	@echo "🚀 EJECUTANDO APLICACIÓN NIVEL CAPA DE LOGICA DE NEGOCIOS..."
 	@echo "=========================================="
 	go run ./logica_neg/cmd/server/main.go

@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	_ "github.com/lib/pq" // Driver de PostgreSQL
-	// Asegúrate de que la ruta de importación coincida con el nombre de tu módulo en go.mod
-	// seguido de la ruta al paquete sqlc.
-	// Por ejemplo: "proyectoAPP_WEB/persistencia/db/sqlc"
+
+	"proyectoAPP_WEB/logica_neg/pkg/handlers"
+
 	sqlc "proyectoAPP_WEB/persistencia/db/sqlc"
 )
 
@@ -36,31 +36,18 @@ func main() {
 	// Algo para que queries no tire error de variable no usada
 	_ = queries
 
-	// 2. Configuración del Servidor HTTP
+	// ----- CONFIGURACION DE RUTAS ----- //
+	http.HandleFunc("/clientes", handlers.ClientesHandler(queries))
+	http.HandleFunc("/resenas", handlers.ResenasHandler(queries))
+	// ---------------------------------- //
 	/*
-		POST /<entidades>: Debe recibir datos en formato JSON, validarlos (ej. que el título no esté vacío), usar el
-		método Create... de sqlc para guardarlos en la base de datos y devolver el nuevo objeto como JSON con
-		estado 201.
-	*/
-
-	/*
-		GET /<entidades>: Debe usar el método List... de sqlc para obtener todos los registros y devolverlos
-		como un array JSON.
-	*/
-
-	/*
-		GET /<entidades>/{id}: Debe obtener el ID de la URL, buscar el registro con Get... y devolverlo. Si no
-		existe, debe devolver un 404.
-	*/
-
-	/*
-		PUT /<entidades>/{id}: Debe recibir datos JSON, validarlos, y actualizar el registro correspondiente usando
-		Update....
-	*/
-
-	/*
-		DELETE /<entidades>/{id}: Debe eliminar el registro usando Delete... y devolver un estado 204 (No
-		Content).
+		ESTAN HECHOS EN HANDLER.GO DOS PUNTOS DEL ENUNCIADO, LOS GET PARA LISTAR TODOS LOS CLIENTES Y LAS RESENAS DE UN CLIENTE
+		1. MAKE ALL -> MAKE DESTROY - MAKE RUN_DATOS ( capa de datos ) - MAKE RUN_SERVER ( capa de logica de negocio )
+		2. ABRIR OTRA TERMINAL Y EJECUTAR hurl logica_neg/hurl/clientes.hurl o hurl logica_neg/hurl/resenas.hurl
+		Archivos para mirar:
+		- logica_neg/pkg/handlers/handler.go
+		- logica_neg/hurl/clientes.hurl y logica_neg/hurl/resenas.hurl
+		- logica_neg/pkg/handlers/models.go ( tiene los modelos que muestra la logica de negocio evitando mostrar datos sensibles como contraseñas o IDs)
 	*/
 	log.Println("Iniciando servidor en http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
