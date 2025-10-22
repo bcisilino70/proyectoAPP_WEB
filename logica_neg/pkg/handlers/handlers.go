@@ -75,3 +75,45 @@ func ResenasHandler(queries *sqlc.Queries) http.HandlerFunc {
 	}
 
 }
+
+// --- CREAR CLIENTE usando BD con el metodo CREATE de sqlc --- //
+func CrearClienteHandler(queries *sqlc.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Implementación para crear un cliente
+	}
+}
+
+// --- CREAR RESENA usando BD con el metodo CREATE de sqlc --- //
+func CrearResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Implementación para crear una reseña
+	}
+}
+
+// --- UPDATE CLIENTE usando BD con el metodo UPDATE de sqlc --- //
+func UpdateClienteHandler(queries *sqlc.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Implementación para actualizar un cliente
+	}
+}
+
+// --- UPDATE RESENA usando BD con el metodo UPDATE de sqlc --- //
+func UpdateResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Implementación para actualizar una reseña
+	}
+}
+
+// --- DELETE CLIENTE usando BD con el metodo DELETE de sqlc --- //
+func DeleteClienteHandler(queries *sqlc.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Implementación para eliminar un cliente
+	}
+}
+
+// --- DELETE RESENA usando BD con el metodo DELETE de sqlc --- //
+func DeleteResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Implementación para eliminar una reseña
+	}
+}

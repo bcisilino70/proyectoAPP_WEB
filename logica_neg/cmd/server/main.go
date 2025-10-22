@@ -37,8 +37,14 @@ func main() {
 	_ = queries
 
 	// ----- CONFIGURACION DE RUTAS ----- //
-	http.HandleFunc("/clientes", handlers.ClientesHandler(queries))
-	http.HandleFunc("/resenas", handlers.ResenasHandler(queries))
+	http.HandleFunc("/crearCliente", handlers.CrearClienteHandler(queries))   //POST responde a create de CRUD
+	http.HandleFunc("/crearResena", handlers.CrearResenaHandler(queries))     //POST responde a create de CRUD
+	http.HandleFunc("/clientes", handlers.ClientesHandler(queries))           //GET responde al read de CRUD
+	http.HandleFunc("/resenas", handlers.ResenasHandler(queries))             //GET responde al read de CRUD
+	http.HandleFunc("/updateCliente", handlers.UpdateClienteHandler(queries)) //PUT responde al update de CRUD
+	http.HandleFunc("/updateResena", handlers.UpdateResenaHandler(queries))   //PUT responde al update de CRUD
+	http.HandleFunc("/deleteCliente", handlers.DeleteClienteHandler(queries)) //DELETE responde al delete de CRUD
+	http.HandleFunc("/deleteResena", handlers.DeleteResenaHandler(queries))   //DELETE responde al delete de CRUD
 	// ---------------------------------- //
 	/*
 		ESTAN HECHOS EN HANDLER.GO DOS PUNTOS DEL ENUNCIADO, LOS GET PARA LISTAR TODOS LOS CLIENTES Y LAS RESENAS DE UN CLIENTE
