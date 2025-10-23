@@ -30,3 +30,7 @@ HTTP/1.1 200
 DELETE http://localhost:8080/clientes?id=2
 
 HTTP/1.1 204
+
+# Obtener todos los clientes
+GET http://localhost:8080/clientes
+HTTP/1.1 200

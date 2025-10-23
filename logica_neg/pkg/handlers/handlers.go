@@ -201,10 +201,57 @@ func ResenasHandler(queries *sqlc.Queries) http.HandlerFunc {
 	- Usa el método CreateResena de sqlc para guardar en la base de datos
 	- Devuelve la nueva reseña creada como JSON con estado 201
 */
-
 func CrearResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Implementación para crear una resena
+		w.Header().Set("Content-Type", "application/json")
+
+		// 1. Decodificar JSON (solo titulo, descripcion, nota)
+		var input struct {
+			Titulo      string `json:"titulo"`
+			Descripcion string `json:"descripcion"`
+			Nota        int32  `json:"nota"`
+		}
+
+		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+			http.Error(w, `{"error":"JSON inválido"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 2. Validación en un solo if
+		if input.Titulo == "" || input.Descripcion == "" || input.Nota < 1 || input.Nota > 10 {
+			http.Error(w, `{"error":"Título, descripción son requeridos y la nota debe estar entre 1 y 10"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 3. Obtener el clienteID de la URL
+		clienteIDStr := r.URL.Query().Get("cliente_id")
+		if clienteIDStr == "" {
+			http.Error(w, `{"error":"cliente_id es requerido"}`, http.StatusBadRequest)
+			return
+		}
+
+		var clienteID int32
+		_, err := fmt.Sscanf(clienteIDStr, "%d", &clienteID)
+		if err != nil || clienteID <= 0 {
+			http.Error(w, `{"error":"cliente_id inválido"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 4. Crear la reseña en la BD (combinando JSON + URL)
+		resena, err := queries.CreateResena(r.Context(), sqlc.CreateResenaParams{
+			Titulo:      input.Titulo,
+			Descripcion: input.Descripcion,
+			Nota:        input.Nota,
+			ClienteID:   clienteID, // De la URL
+		})
+		if err != nil {
+			http.Error(w, `{"error":"Error al crear la reseña"}`, http.StatusInternalServerError)
+			return
+		}
+
+		// 5. Respuesta 201 Created con la reseña creada
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(resena)
 	}
 }
 
