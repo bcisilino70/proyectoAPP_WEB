@@ -46,9 +46,8 @@ func main() {
 
 	// --- UPDATE CLIENTE -- UPDATE
 	err = queries.UpdateCliente(ctx, sqlc.UpdateClienteParams{ // Update
-		Email:   "johnny.doe@example.com",
-		Usuario: crearUsuario.Usuario,
-		Pass:    crearUsuario.Pass,
+		Email: "johnny.doe@example.com",
+		ID:    crearUsuario.ID,
 	})
 	if err != nil {
 		log.Fatalf("Error al modificar cliente: %v", err)

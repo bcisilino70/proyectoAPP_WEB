@@ -7,7 +7,7 @@ RETURNING id,nombre,apellido,usuario,pass,email;
 -- Permite al cliente cambiar el email. 
 UPDATE CLIENTE
 SET email = $1
-WHERE (usuario = $2) AND (pass = $3);
+WHERE (id = $2);
 
 -- name: GetCliente :one
 -- Permite traer un cliente 
@@ -51,5 +51,5 @@ WHERE (titulo = $1);
 -- Consulta para borrar un cliente
 -- name: DeleteCliente :exec
 DELETE FROM CLIENTE
-WHERE (usuario = $1); 
+WHERE (id = $1); 
 

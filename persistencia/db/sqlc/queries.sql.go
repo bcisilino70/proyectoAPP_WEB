@@ -79,12 +79,12 @@ func (q *Queries) CreateResena(ctx context.Context, arg CreateResenaParams) (Res
 
 const deleteCliente = `-- name: DeleteCliente :exec
 DELETE FROM CLIENTE
-WHERE (usuario = $1)
+WHERE (id = $1)
 `
 
 // Consulta para borrar un cliente
-func (q *Queries) DeleteCliente(ctx context.Context, usuario string) error {
-	_, err := q.db.ExecContext(ctx, deleteCliente, usuario)
+func (q *Queries) DeleteCliente(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, deleteCliente, id)
 	return err
 }
 
@@ -244,18 +244,17 @@ func (q *Queries) ListResenas(ctx context.Context, clienteID int32) ([]ListResen
 const updateCliente = `-- name: UpdateCliente :exec
 UPDATE CLIENTE
 SET email = $1
-WHERE (usuario = $2) AND (pass = $3)
+WHERE (id = $2)
 `
 
 type UpdateClienteParams struct {
-	Email   string `json:"email"`
-	Usuario string `json:"usuario"`
-	Pass    string `json:"pass"`
+	Email string `json:"email"`
+	ID    int32  `json:"id"`
 }
 
 // Permite al cliente cambiar el email.
 func (q *Queries) UpdateCliente(ctx context.Context, arg UpdateClienteParams) error {
-	_, err := q.db.ExecContext(ctx, updateCliente, arg.Email, arg.Usuario, arg.Pass)
+	_, err := q.db.ExecContext(ctx, updateCliente, arg.Email, arg.ID)
 	return err
 }
 

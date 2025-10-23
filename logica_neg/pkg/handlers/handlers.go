@@ -87,13 +87,27 @@ func UpdateClienteHandler(queries *sqlc.Queries) http.HandlerFunc {
 		}
 
 		// 2. Validaciones
-		if params.Email == "" || params.Usuario == "" || params.Pass == "" {
-			http.Error(w, `{"error":"Email, usuario y contraseña son requeridos"}`, http.StatusBadRequest)
+		if params.Email == "" {
+			http.Error(w, `{"error":"Email requerido"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 1. Obtener el ID del cliente desde la URL
+		idStr := r.URL.Query().Get("id")
+		if idStr == "" {
+			http.Error(w, `{"error":"Se requiere el parámetro id"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 2. Convertir el ID a int32
+		_, err := fmt.Sscanf(idStr, "%d", &params.ID)
+		if err != nil {
+			http.Error(w, `{"error":"ID inválido"}`, http.StatusBadRequest)
 			return
 		}
 
 		// 3. Actualizar en la BD
-		err := queries.UpdateCliente(r.Context(), params)
+		err = queries.UpdateCliente(r.Context(), params)
 		if err != nil {
 			http.Error(w, `{"error":"Error al actualizar cliente"}`, http.StatusInternalServerError)
 			return
@@ -107,31 +121,38 @@ func UpdateClienteHandler(queries *sqlc.Queries) http.HandlerFunc {
 
 // --- DELETE CLIENTE usando BD con el metodo DELETE de sqlc --- //
 /*
-	- Obtiene el usuario del query parameter o del body JSON
+	- Obtiene el ID del cliente desde la URL (query parameter)
+	- Una vez que el usuario se loguea, se coloca el ID en la URL (problema para después)
 	- Usa el método DeleteCliente de sqlc para eliminar de la base de datos
 	- Devuelve estado 204 No Content si se eliminó correctamente
 */
 func DeleteClienteHandler(queries *sqlc.Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// 1. Obtener usuario del query param
+		w.Header().Set("Content-Type", "application/json")
 
-		// RE-HACER ESTA PARTE. EL DELETE NECESITA EL ID COMO PARAMETRO
-		/*
-			usuario := r.URL.Query().Get("usuario")
-			if usuario == "" {
-				http.Error(w, `{"error":"Se requiere el parámetro usuario"}`, http.StatusBadRequest)
-				return
-			}
-		*/
+		// 1. Obtener el ID del cliente desde la URL
+		idStr := r.URL.Query().Get("id")
+		if idStr == "" {
+			http.Error(w, `{"error":"Se requiere el parámetro id"}`, http.StatusBadRequest)
+			return
+		}
 
-		// 2. Eliminar de la BD
-		err := queries.DeleteCliente(r.Context(), usuario)
+		// 2. Convertir el ID a int32
+		var clienteID int32
+		_, err := fmt.Sscanf(idStr, "%d", &clienteID)
+		if err != nil {
+			http.Error(w, `{"error":"ID inválido"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 3. Eliminar de la BD
+		err = queries.DeleteCliente(r.Context(), clienteID)
 		if err != nil {
 			http.Error(w, `{"error":"Error al eliminar cliente"}`, http.StatusInternalServerError)
 			return
 		}
 
-		// 3. Respuesta 204 No Content (sin body)
+		// 4. Respuesta 204 No Content (sin body)
 		w.WriteHeader(http.StatusNoContent) // 204
 	}
 }
