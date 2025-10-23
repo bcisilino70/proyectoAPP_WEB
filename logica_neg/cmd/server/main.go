@@ -36,15 +36,6 @@ func main() {
 	// Algo para que queries no tire error de variable no usada
 	_ = queries
 
-	// ----- CONFIGURACION DE RUTAS ----- //
-	http.HandleFunc("/crearCliente", handlers.CrearClienteHandler(queries))   //POST responde a create de CRUD
-	http.HandleFunc("/crearResena", handlers.CrearResenaHandler(queries))     //POST responde a create de CRUD
-	http.HandleFunc("/clientes", handlers.ClientesHandler(queries))           //GET responde al read de CRUD
-	http.HandleFunc("/resenas", handlers.ResenasHandler(queries))             //GET responde al read de CRUD
-	http.HandleFunc("/updateCliente", handlers.UpdateClienteHandler(queries)) //PUT responde al update de CRUD
-	http.HandleFunc("/updateResena", handlers.UpdateResenaHandler(queries))   //PUT responde al update de CRUD
-	http.HandleFunc("/deleteCliente", handlers.DeleteClienteHandler(queries)) //DELETE responde al delete de CRUD
-	http.HandleFunc("/deleteResena", handlers.DeleteResenaHandler(queries))   //DELETE responde al delete de CRUD
 	// ---------------------------------- //
 	/*
 		ESTAN HECHOS EN HANDLER.GO DOS PUNTOS DEL ENUNCIADO, LOS GET PARA LISTAR TODOS LOS CLIENTES Y LAS RESENAS DE UN CLIENTE
@@ -55,6 +46,37 @@ func main() {
 		- logica_neg/hurl/clientes.hurl y logica_neg/hurl/resenas.hurl
 		- logica_neg/pkg/handlers/models.go ( tiene los modelos que muestra la logica de negocio evitando mostrar datos sensibles como contraseñas o IDs)
 	*/
+	// ----- CONFIGURACION DE RUTAS (ESTILO REST) ----- //
+	http.HandleFunc("/clientes", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet: // Listar
+			handlers.ClientesHandler(queries)(w, r)
+		case http.MethodPost: // Crear
+			handlers.CrearClienteHandler(queries)(w, r)
+		case http.MethodPut: // Actualizar
+			handlers.UpdateClienteHandler(queries)(w, r)
+		case http.MethodDelete: // Eliminar
+			handlers.DeleteClienteHandler(queries)(w, r)
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+
+	http.HandleFunc("/resenas", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet: // Listar
+			handlers.ResenasHandler(queries)(w, r)
+		case http.MethodPost: // Crear
+			handlers.CrearResenaHandler(queries)(w, r)
+		case http.MethodPut: // Actualizar
+			handlers.UpdateResenaHandler(queries)(w, r)
+		case http.MethodDelete: // Eliminar
+			handlers.DeleteResenaHandler(queries)(w, r)
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+
 	log.Println("Iniciando servidor en http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatalf("No se pudo iniciar el servidor: %v", err)

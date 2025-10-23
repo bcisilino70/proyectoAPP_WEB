@@ -6,7 +6,6 @@
   go version
   ```
 - Un terminal / consola (PowerShell en Windows, Terminal en macOS / Linux).
-- (Opcional) Git, si el corrector clona desde un repositorio.
 
 No se necesitan dependencias externas
 
