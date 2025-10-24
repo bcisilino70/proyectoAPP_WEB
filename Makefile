@@ -30,7 +30,7 @@ all:
 	@echo ""
 	$(MAKE) destroy
 	@echo ""
-	$(MAKE) run_datos
+	$(MAKE) setup
 	@echo ""
 	$(MAKE) run_logica
 	@echo "✅ FLUJO COMPLETADO EXITOSAMENTE!"
@@ -68,17 +68,10 @@ setup:
 	@echo "   Base de datos: $(DB_NAME)"
 	@echo "   Puerto: $(DB_PORT)"
 
-# Ejecutar la aplicación
-run_datos: setup
-	@echo "🚀 EJECUTANDO APLICACIÓN NIVEL CAPA DE DATOS..."
-	@echo "=========================================="
-	go run ./persistencia/main.go
-	@echo "✅ EJECUCIÓN COMPLETADA!"
-
 run_logica: 
 	@echo "🚀 EJECUTANDO APLICACIÓN NIVEL CAPA DE LOGICA DE NEGOCIOS..."
 	@echo "=========================================="
-	go run ./logica_neg/cmd/server/main.go
+	go run ./cmd/server/main.go
 	@echo "✅ EJECUCIÓN COMPLETADA!"
 
 # Ejecutar tests

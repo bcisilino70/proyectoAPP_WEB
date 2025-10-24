@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <title>Reseñas de Tandil</title>
+</head>
+<body>
+
+    
+    <header>
+        <h1>Reseñas de Sitios Turísticos de Tandil</h1>
+    </header>
+
+    <main>
+        
+
+        <section id="formulario-cliente">
+            <h2>Registrarse como Cliente</h2>
+            
+            <form id="create-cliente-form" method="POST">
+                <div>
+                    <label for="cliente-nombre">Nombre:</label>
+                    <input type="text" id="client-nombre" name="nombre" required>
+                </div>
+                <div>
+                    <label for="cliente-apellido">Apellido:</label>
+                    <input type="text" id="client-apellido" name="apellido" required>
+                </div>
+                <div>
+                    <label for="cliente-usuario">Usuario:</label>
+                    <input type="text" id="client-usuario" name="usuario" required>
+                </div>
+                <div>
+                    <label for="cliente-esmail">Mail:</label>
+                    <input type="email" id="client-mail" name="mail" required>
+                </div>
+                <div>
+                    <label for="cliente-pass">Contraseña:</label>
+                    <input type="password" id="client-pass" name="contrasena" required>
+                </div>
+                <button type="submit">Registrarse</button>
+            </form>
+        </section>
+
+        
+        <section id="formulario-resena">
+            <h2>Dejar una Reseña</h2>
+            
+            <form id="create-resena-form" method="POST">
+                <div>
+                    <label for="resena-client-id">Tu ID de Cliente:</label>
+                    <input type="number" id="resena-client-id" name="cliente_id" required>
+                </div>
+                <div>
+                    <label for="resena-titulo">Título de la Reseña:</label>
+                    <input type="text" id="resena-titulo" name="titulo" required>
+                </div>
+                <div>
+                    <label for="resena-descripcion">Descripción:</label>
+                    <textarea id="resena-descripcion" name="descripcion" rows="4" cols="50"></textarea>
+                </div>
+                <div>
+                    <label for="resena-nota">Nota (1-5):</label>
+                    <input type="number" id="resena-nota" name="nota" min="1" max="10" required>
+                </div>
+                <button type="submit">Enviar Reseña</button>
+            </form>
+        </section>
+
+
+        <section id="listado-resenas">
+            <h2>Últimas Reseñas</h2>
+            
+            
+            <div id="reviews-list">
+                <!-- Los datos se cargarán aquí dinámicamente con JavaScript -->
+                <p>Cargando reseñas...</p>
+            </div>
+        </section>
+    </main>
+
+
+    <script src="/app.js" defer></script>
+
+</body>
+</html>
+

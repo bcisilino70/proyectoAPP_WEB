@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	_ "github.com/lib/pq" // Driver de PostgreSQL
+	_ "github.com/lib/pq"
 
 	"proyectoAPP_WEB/logica_neg/pkg/handlers"
 
@@ -38,17 +38,6 @@ func main() {
 
 	// ----- CONFIGURACION DE RUTAS (ESTILO REST) ----- //
 
-	// Ruta raíz para verificar que el servidor está funcionando
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/" {
-			http.NotFound(w, r)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"message":"API de Clientes y Reseñas funcionando","version":"1.0","endpoints":["/clientes","/resenas"]}`))
-	})
-
 	http.HandleFunc("/clientes", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet: // Listar
@@ -78,6 +67,15 @@ func main() {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	})
+
+	// --- 2. SERVIDOR DE ARCHIVOS ESTÁTICOS (NUEVO) ---
+	// Este handler para "/" manejará cualquier ruta que NO COINCIDA
+	// con /clientes o /resenas.
+	// Servirá los archivos desde el directorio "./static" que creaste.
+	// Cuando alguien visite "/", el FileServer buscará "index.html" por defecto.
+
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/", fs)
 
 	log.Println("Iniciando servidor en http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
