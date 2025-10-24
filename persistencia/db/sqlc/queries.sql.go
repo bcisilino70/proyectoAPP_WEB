@@ -90,12 +90,17 @@ func (q *Queries) DeleteCliente(ctx context.Context, id int32) error {
 
 const deleteResena = `-- name: DeleteResena :exec
 DELETE FROM RESENA 
-WHERE (titulo = $1)
+WHERE (id = $1) AND (cliente_id = $2)
 `
 
+type DeleteResenaParams struct {
+	ID        int32 `json:"id"`
+	ClienteID int32 `json:"cliente_id"`
+}
+
 // Consulta para borrar una resena.
-func (q *Queries) DeleteResena(ctx context.Context, titulo string) error {
-	_, err := q.db.ExecContext(ctx, deleteResena, titulo)
+func (q *Queries) DeleteResena(ctx context.Context, arg DeleteResenaParams) error {
+	_, err := q.db.ExecContext(ctx, deleteResena, arg.ID, arg.ClienteID)
 	return err
 }
 
@@ -198,7 +203,6 @@ func (q *Queries) ListResena(ctx context.Context, arg ListResenaParams) (ListRes
 }
 
 const listResenas = `-- name: ListResenas :many
-
 SELECT titulo, descripcion, nota, fecha 
 FROM RESENA
 WHERE (cliente_id = $1)
@@ -211,7 +215,6 @@ type ListResenasRow struct {
 	Fecha       time.Time `json:"fecha"`
 }
 
-// El cliente puede actualizar una resena pero no sabe el id de la misma. A chequear
 // Consulta para listar TODAS resenas de un cliente.
 func (q *Queries) ListResenas(ctx context.Context, clienteID int32) ([]ListResenasRow, error) {
 	rows, err := q.db.QueryContext(ctx, listResenas, clienteID)
@@ -260,14 +263,15 @@ func (q *Queries) UpdateCliente(ctx context.Context, arg UpdateClienteParams) er
 
 const updateResena = `-- name: UpdateResena :exec
 UPDATE RESENA                           
-SET titulo = $1, descripcion = $2
-WHERE (titulo = $3) AND (cliente_id = $4)
+SET titulo = $1, descripcion = $2, nota = $3
+WHERE (id = $4) AND (cliente_id = $5)
 `
 
 type UpdateResenaParams struct {
 	Titulo      string `json:"titulo"`
 	Descripcion string `json:"descripcion"`
-	Titulo_2    string `json:"titulo_2"`
+	Nota        int32  `json:"nota"`
+	ID          int32  `json:"id"`
 	ClienteID   int32  `json:"cliente_id"`
 }
 
@@ -275,7 +279,8 @@ func (q *Queries) UpdateResena(ctx context.Context, arg UpdateResenaParams) erro
 	_, err := q.db.ExecContext(ctx, updateResena,
 		arg.Titulo,
 		arg.Descripcion,
-		arg.Titulo_2,
+		arg.Nota,
+		arg.ID,
 		arg.ClienteID,
 	)
 	return err

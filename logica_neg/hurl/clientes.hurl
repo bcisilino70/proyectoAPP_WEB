@@ -13,11 +13,10 @@ Content-Type: application/json
   "pass": "onichan",
   "email": "chinito@mail.com"
 }
-
 HTTP/1.1 201
 
 # Actualizar el email de un cliente
-PUT http://localhost:8080/clientes?id=2
+PUT http://localhost:8080/clientes?id=1
 Content-Type: application/json
 
 {

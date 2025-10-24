@@ -7,12 +7,13 @@ POST http://localhost:8080/resenas?cliente_id=1
 Content-Type: application/json
 
 {
-    "titulo" : "Plaza del tanque (casi me roban)",
-    "descripcion" : "Un lugar tranquilo, espacioso",
+    "titulo" : "Plaza del tanque",
+    "descripcion" : "Un lugar tranquilo",
     "nota" : 5
 }
 
 HTTP/1.1 201
+
 
 # Actualizar la resena
 

@@ -28,8 +28,8 @@ RETURNING id,titulo,descripcion,nota,fecha,cliente_id;
 
 -- name: UpdateResena :exec
 UPDATE RESENA                           
-SET titulo = $1, descripcion = $2
-WHERE (titulo = $3) AND (cliente_id = $4);    -- El cliente puede actualizar una resena pero no sabe el id de la misma. A chequear
+SET titulo = $1, descripcion = $2, nota = $3
+WHERE (id = $4) AND (cliente_id = $5);
 
 -- Consulta para listar TODAS resenas de un cliente.
 -- name: ListResenas :many
@@ -46,7 +46,7 @@ WHERE (cliente_id = $1) and (titulo = $2);
 -- Consulta para borrar una resena. 
 -- name: DeleteResena :exec
 DELETE FROM RESENA 
-WHERE (titulo = $1);
+WHERE (id = $1) AND (cliente_id = $2);
 
 -- Consulta para borrar un cliente
 -- name: DeleteCliente :exec

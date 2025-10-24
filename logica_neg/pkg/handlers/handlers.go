@@ -206,19 +206,15 @@ func CrearResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 
 		// 1. Decodificar JSON (solo titulo, descripcion, nota)
-		var input struct {
-			Titulo      string `json:"titulo"`
-			Descripcion string `json:"descripcion"`
-			Nota        int32  `json:"nota"`
-		}
+		var params sqlc.CreateResenaParams
 
-		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 			http.Error(w, `{"error":"JSON inválido"}`, http.StatusBadRequest)
 			return
 		}
 
 		// 2. Validación en un solo if
-		if input.Titulo == "" || input.Descripcion == "" || input.Nota < 1 || input.Nota > 10 {
+		if params.Titulo == "" || params.Descripcion == "" || params.Nota < 1 || params.Nota > 10 {
 			http.Error(w, `{"error":"Título, descripción son requeridos y la nota debe estar entre 1 y 10"}`, http.StatusBadRequest)
 			return
 		}
@@ -230,22 +226,18 @@ func CrearResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
 			return
 		}
 
-		var clienteID int32
-		_, err := fmt.Sscanf(clienteIDStr, "%d", &clienteID)
-		if err != nil || clienteID <= 0 {
+		_, err := fmt.Sscanf(clienteIDStr, "%d", &params.ClienteID)
+		if err != nil || params.ClienteID <= 0 {
 			http.Error(w, `{"error":"cliente_id inválido"}`, http.StatusBadRequest)
 			return
 		}
 
 		// 4. Crear la reseña en la BD (combinando JSON + URL)
-		resena, err := queries.CreateResena(r.Context(), sqlc.CreateResenaParams{
-			Titulo:      input.Titulo,
-			Descripcion: input.Descripcion,
-			Nota:        input.Nota,
-			ClienteID:   clienteID, // De la URL
-		})
+		resena, err := queries.CreateResena(r.Context(), params)
 		if err != nil {
-			http.Error(w, `{"error":"Error al crear la reseña"}`, http.StatusInternalServerError)
+			// Mostrar el error específico
+			fmt.Printf("ERROR AL CREAR RESEÑA: %v\n", err) // Para el log del servidor
+			http.Error(w, fmt.Sprintf(`{"error":"Error al crear la reseña: %v"}`, err), http.StatusInternalServerError)
 			return
 		}
 
@@ -256,15 +248,118 @@ func CrearResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
 }
 
 // --- UPDATE RESENA usando BD con el metodo UPDATE de sqlc --- //
+/*
+	- Recibe datos en formato JSON con el nuevo título, descripción y nota
+	- Obtiene el id de la reseña y el cliente_id desde la URL
+	- Usa el método UpdateResena de sqlc para actualizar en la base de datos
+	- Devuelve estado 200 OK si se actualizó correctamente
+*/
 func UpdateResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Implementación para actualizar una reseña
+		w.Header().Set("Content-Type", "application/json")
+
+		// 1. Decodificar JSON (nuevo título, descripción y nota)
+		var params sqlc.UpdateResenaParams
+		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
+			http.Error(w, `{"error":"JSON inválido"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 2. Validaciones de campos del JSON
+		if params.Titulo == "" || params.Descripcion == "" {
+			http.Error(w, `{"error":"Título y descripción son requeridos"}`, http.StatusBadRequest)
+			return
+		}
+
+		if params.Nota < 1 || params.Nota > 10 {
+			http.Error(w, `{"error":"La nota debe estar entre 1 y 10"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 3. Obtener el cliente_id de la URL
+		clienteIDStr := r.URL.Query().Get("cliente_id")
+		if clienteIDStr == "" {
+			http.Error(w, `{"error":"cliente_id es requerido"}`, http.StatusBadRequest)
+			return
+		}
+
+		_, err := fmt.Sscanf(clienteIDStr, "%d", &params.ClienteID)
+		if err != nil || params.ClienteID <= 0 {
+			http.Error(w, `{"error":"cliente_id inválido"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 4. Obtener el id de la reseña desde la URL
+		resenaIDStr := r.URL.Query().Get("id")
+		if resenaIDStr == "" {
+			http.Error(w, `{"error":"id de reseña es requerido"}`, http.StatusBadRequest)
+			return
+		}
+
+		_, err = fmt.Sscanf(resenaIDStr, "%d", &params.ID)
+		if err != nil || params.ID <= 0 {
+			http.Error(w, `{"error":"id de reseña inválido"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 5. Actualizar la reseña en la BD
+		err = queries.UpdateResena(r.Context(), params)
+		if err != nil {
+			http.Error(w, `{"error":"Error al actualizar la reseña"}`, http.StatusInternalServerError)
+			return
+		}
+
+		// 6. Respuesta 200 OK con mensaje
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"message":"Reseña actualizada correctamente"}`))
 	}
 }
 
 // --- DELETE RESENA usando BD con el metodo DELETE de sqlc --- //
+/*
+	- Obtiene el id de la reseña y el cliente_id desde la URL (query parameters)
+	- Usa el método DeleteResena de sqlc para eliminar de la base de datos
+	- Devuelve estado 204 No Content si se eliminó correctamente
+*/
 func DeleteResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Implementación para eliminar una reseña
+		w.Header().Set("Content-Type", "application/json")
+
+		// 1. Obtener el id de la reseña desde la URL
+		resenaIDStr := r.URL.Query().Get("id")
+		if resenaIDStr == "" {
+			http.Error(w, `{"error":"Se requiere el parámetro id"}`, http.StatusBadRequest)
+			return
+		}
+
+		var params sqlc.DeleteResenaParams
+		_, err := fmt.Sscanf(resenaIDStr, "%d", &params.ID)
+		if err != nil || params.ID <= 0 {
+			http.Error(w, `{"error":"ID de reseña inválido"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 2. Obtener el cliente_id desde la URL
+		clienteIDStr := r.URL.Query().Get("cliente_id")
+		if clienteIDStr == "" {
+			http.Error(w, `{"error":"Se requiere el parámetro cliente_id"}`, http.StatusBadRequest)
+			return
+		}
+
+		_, err = fmt.Sscanf(clienteIDStr, "%d", &params.ClienteID)
+		if err != nil || params.ClienteID <= 0 {
+			http.Error(w, `{"error":"cliente_id inválido"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 3. Eliminar de la BD
+		err = queries.DeleteResena(r.Context(), params)
+		if err != nil {
+			http.Error(w, `{"error":"Error al eliminar la reseña"}`, http.StatusInternalServerError)
+			return
+		}
+
+		// 4. Respuesta 204 No Content (sin body)
+		w.WriteHeader(http.StatusNoContent) // 204
 	}
 }

@@ -36,17 +36,19 @@ func main() {
 	// Algo para que queries no tire error de variable no usada
 	_ = queries
 
-	// ---------------------------------- //
-	/*
-		ESTAN HECHOS EN HANDLER.GO DOS PUNTOS DEL ENUNCIADO, LOS GET PARA LISTAR TODOS LOS CLIENTES Y LAS RESENAS DE UN CLIENTE
-		1. MAKE ALL -> MAKE DESTROY - MAKE RUN_DATOS ( capa de datos ) - MAKE RUN_SERVER ( capa de logica de negocio )
-		2. ABRIR OTRA TERMINAL Y EJECUTAR hurl logica_neg/hurl/clientes.hurl o hurl logica_neg/hurl/resenas.hurl
-		Archivos para mirar:
-		- logica_neg/pkg/handlers/handler.go
-		- logica_neg/hurl/clientes.hurl y logica_neg/hurl/resenas.hurl
-		- logica_neg/pkg/handlers/models.go ( tiene los modelos que muestra la logica de negocio evitando mostrar datos sensibles como contraseñas o IDs)
-	*/
 	// ----- CONFIGURACION DE RUTAS (ESTILO REST) ----- //
+
+	// Ruta raíz para verificar que el servidor está funcionando
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"message":"API de Clientes y Reseñas funcionando","version":"1.0","endpoints":["/clientes","/resenas"]}`))
+	})
+
 	http.HandleFunc("/clientes", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet: // Listar
