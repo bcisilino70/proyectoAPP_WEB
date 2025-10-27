@@ -38,6 +38,16 @@ func main() {
 
 	// ----- CONFIGURACION DE RUTAS (ESTILO REST) ----- //
 
+	// Ruta login.
+	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			handlers.LoginClienteHandler(queries)(w, r)
+		} else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+
+	// Rutas para clientes y reseñas
 	http.HandleFunc("/clientes", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet: // Listar

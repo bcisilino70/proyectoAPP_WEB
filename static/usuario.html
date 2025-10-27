@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Usuario - Reseñas de Tandil</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; }
+        h1 { text-align: center; margin-top: 1em; }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1em;
+            padding: 2em;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .grid-item {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1em;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+        form label { display: block; margin-top: 0.5em; }
+        form input, form textarea, form select {
+            width: 100%;
+            margin-top: 0.2em;
+            padding: 0.4em;
+        }
+        form button { margin-top: 1em; width: 100%; padding: 0.6em; }
+        @media (max-width: 900px) {
+            .grid-container { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+            .grid-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Panel de Usuario</h1>
+    <div class="grid-container">
+        <!-- Dejar una Reseña -->
+        <div class="grid-item">
+            <h2>Dejar una Reseña</h2>
+            <form id="form-resena">
+                <label>Tu ID de Cliente:
+                    <input type="number" name="cliente_id" required>
+                </label>
+                <label>Título:
+                    <input type="text" name="titulo" required>
+                </label>
+                <label>Descripción:
+                    <textarea name="descripcion" required></textarea>
+                </label>
+                <label>Nota (1-5):
+                    <input type="number" name="nota" min="1" max="5" required>
+                </label>
+                <button type="submit">Enviar Reseña</button>
+            </form>
+        </div>
+        <!-- Borrar Reseña -->
+        <div class="grid-item">
+            <h2>Borrar Reseña</h2>
+            <div>
+                <!-- Aquí puedes agregar el formulario o controles para borrar reseñas -->
+                <p>A definir cómo...</p>
+            </div>
+        </div>
+        <!-- Últimas Reseñas -->
+        <div class="grid-item">
+            <h2>Últimas Reseñas</h2>
+            <div id="ultimas-resenas">
+                <!-- Aquí se mostrarán las últimas reseñas -->
+            </div>
+        </div>
+        <!-- Buscar Reseña -->
+        <div class="grid-item">
+            <h2>Buscar Reseña</h2>
+            <div>
+                <!-- Aquí puedes agregar el formulario o controles para buscar reseñas -->
+                <p>A definir cómo...</p>
+            </div>
+        </div>
+    </div>
+    <script src="/app.js" defer></script>
+</body>
+</html>

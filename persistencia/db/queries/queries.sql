@@ -15,6 +15,12 @@ SELECT nombre, apellido, usuario, email
 FROM CLIENTE
 WHERE (id = $1);
 
+-- name: GetClienteUsuarioYPass :one
+-- Permite buscar un cliente para el login
+SELECT id, nombre, apellido, usuario, pass, email
+FROM CLIENTE
+WHERE usuario = $1 AND pass = $2; 
+
 -- name: ListCliente :many
 -- Permite mostrar todos los clientes
 SELECT nombre, apellido, usuario, email

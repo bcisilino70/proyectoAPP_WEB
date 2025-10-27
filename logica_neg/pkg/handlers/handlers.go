@@ -9,6 +9,51 @@ import (
 	sqlc "proyectoAPP_WEB/persistencia/db/sqlc"
 )
 
+// --- ---------------------------------------- CLIENTES -------------------------------------------------------- //
+
+// --- Login CLIENTE usando BD con el metodo GET de sqlc --- //
+/*
+	- Recibe datos en formato JSON desde el cuerpo de la petición
+	- Valida que los campos requeridos no estén vacíos
+	- Usa el método GetCliente de sqlc para buscar en la base de datos
+	- Devuelve el cliente encontrado como JSON con estado 200 o error 404 si no existe
+*/
+func LoginClienteHandler(queries *sqlc.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		// 1. Decodificar JSON
+		var params struct {
+			Usuario string `json:"usuario"`
+			Pass    string `json:"pass"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
+			http.Error(w, `{"error":"JSON inválido"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 2. Validaciones
+		if params.Usuario == "" || params.Pass == "" {
+			http.Error(w, `{"error":"Usuario y contraseña son requeridos"}`, http.StatusBadRequest)
+			return
+		}
+
+		// 3. Buscar en la BD
+		cliente, err := queries.GetClienteUsuarioYPass(r.Context(), sqlc.GetClienteUsuarioYPassParams{
+			Usuario: params.Usuario,
+			Pass:    params.Pass,
+		})
+		if err != nil {
+			http.Error(w, `{"error":"Usuario o contraseña incorrectos"}`, http.StatusNotFound)
+			return
+		}
+
+		// 4. Respuesta 200 OK con el cliente encontrado
+		w.WriteHeader(http.StatusOK) // 200
+		json.NewEncoder(w).Encode(cliente)
+	}
+}
+
 // --- GET CLIENTES usando BD con el metodo LIST de sqlc --- //
 /*
 	- funcion que tiene como parametro una instancia de la base de datos hecha en el main.go y devuelve un handlerfunc

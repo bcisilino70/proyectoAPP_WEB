@@ -130,6 +130,32 @@ func (q *Queries) GetCliente(ctx context.Context, id int32) (GetClienteRow, erro
 	return i, err
 }
 
+const getClienteUsuarioYPass = `-- name: GetClienteUsuarioYPass :one
+SELECT id, nombre, apellido, usuario, pass, email
+FROM CLIENTE
+WHERE usuario = $1 AND pass = $2
+`
+
+type GetClienteUsuarioYPassParams struct {
+	Usuario string `json:"usuario"`
+	Pass    string `json:"pass"`
+}
+
+// Permite buscar un cliente para el login
+func (q *Queries) GetClienteUsuarioYPass(ctx context.Context, arg GetClienteUsuarioYPassParams) (Cliente, error) {
+	row := q.db.QueryRowContext(ctx, getClienteUsuarioYPass, arg.Usuario, arg.Pass)
+	var i Cliente
+	err := row.Scan(
+		&i.ID,
+		&i.Nombre,
+		&i.Apellido,
+		&i.Usuario,
+		&i.Pass,
+		&i.Email,
+	)
+	return i, err
+}
+
 const listCliente = `-- name: ListCliente :many
 SELECT nombre, apellido, usuario, email
 FROM CLIENTE
