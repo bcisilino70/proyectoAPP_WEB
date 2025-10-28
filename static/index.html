@@ -4,22 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reseñas de Sitios Turísticos de Tandil</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        main { max-width: 500px; margin: 0 auto; }
-        h1 { text-align: center; }
-        section { margin-bottom: 2em; padding: 1em; border: 1px solid #ddd; border-radius: 8px; }
-        form { margin-top: 1em; }
-        label { display: block; margin-top: 0.5em; }
-        input { width: 100%; padding: 0.4em; margin-top: 0.2em; }
-        button { margin-top: 1em; width: 100%; padding: 0.6em; }
-    </style>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <main>
-        <h1>Reseñas de Sitios Turísticos de Tandil</h1>
-        
-        <section>
+    <div class="page-wrapper">
+        <h1 class="page-title">Reseñas de Sitios Turísticos de Tandil</h1>
+        <p class="auth-note">Registrate o iniciá sesión para empezar a compartir tus experiencias.</p>
+        <main class="auth-layout">
+            <section class="section-card">
             <h2>Registrarse</h2>
             <form id="form-registro">
                 <label>Nombre:
@@ -39,9 +31,9 @@
                 </label>
                 <button type="submit">Registrarse</button>
             </form>
-        </section>
+            </section>
 
-        <section>
+            <section class="section-card">
             <h2>Acceder a mi cuenta</h2>
             <form id="form-login">
                 <label>Usuario:
@@ -52,8 +44,9 @@
                 </label>
                 <button type="submit">Iniciar sesión</button>
             </form>
-        </section>
-    </main>
+            </section>
+        </main>
+    </div>
     <script src="/app.js" defer></script>
 </body>
 </html>

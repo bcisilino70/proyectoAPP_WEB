@@ -78,6 +78,14 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/resenas/recientes", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			handlers.ResenasRecientesHandler(queries)(w, r)
+			return
+		}
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	})
+
 	// --- 2. SERVIDOR DE ARCHIVOS ESTÁTICOS (NUEVO) ---
 	// Este handler para "/" manejará cualquier ruta que NO COINCIDA
 	// con /clientes o /resenas.

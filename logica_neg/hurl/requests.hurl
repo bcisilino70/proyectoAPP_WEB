@@ -6,8 +6,8 @@
 GET http://localhost:8080/
 HTTP/1.1 200
 [Asserts]
-header "Content-Type" contains "application/json"
-jsonpath "$.message" exists
+header "Content-Type" contains "text/html"
+body contains "<!DOCTYPE html>"
 
 # ============================================
 # SECCIÓN 1: CLIENTES
@@ -82,7 +82,7 @@ Content-Type: application/json
 {
   "titulo": "Plaza San Martín",
   "descripcion": "Hermosa plaza en el centro de la ciudad",
-  "nota": 9
+  "nota": 5
 }
 HTTP/1.1 201
 
@@ -93,7 +93,7 @@ Content-Type: application/json
 {
   "titulo": "Restaurante El Buen Sabor",
   "descripcion": "Comida excelente el servicio es un poco lento",
-  "nota": 7
+  "nota": 4
 }
 HTTP/1.1 201
 
@@ -104,7 +104,7 @@ Content-Type: application/json
 {
   "titulo": "Cine Central",
   "descripcion": "Buenas instalaciones y pantallas de calidad",
-  "nota": 8
+  "nota": 4
 }
 HTTP/1.1 201
 
@@ -115,7 +115,7 @@ Content-Type: application/json
 {
   "titulo": "Parque Nacional",
   "descripcion": "Lugar increíble para hacer trekking",
-  "nota": 10
+  "nota": 5
 }
 HTTP/1.1 201
 
@@ -138,7 +138,7 @@ Content-Type: application/json
 {
   "titulo": "Plaza San Martín",
   "descripcion": "Hermosa plaza recientemente",
-  "nota": 10
+  "nota": 5
 }
 HTTP/1.1 200
 
@@ -153,12 +153,18 @@ Content-Type: application/json
 {
   "titulo": "Cine Central",
   "descripcion": "Han mejorado mucho",
-  "nota": 9
+  "nota": 4
 }
 HTTP/1.1 200
 
 # 16. Verificar actualización listando reseñas del Cliente #2
 GET http://localhost:8080/resenas?cliente_id=2
 HTTP/1.1 200
+
+# 17. Listar reseñas recientes de todos los usuarios (máx. 5)
+GET http://localhost:8080/resenas/recientes?limit=5
+HTTP/1.1 200
+[Asserts]
+header "Content-Type" contains "application/json"
 
 

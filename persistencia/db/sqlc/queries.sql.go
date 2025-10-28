@@ -198,7 +198,7 @@ func (q *Queries) ListCliente(ctx context.Context) ([]ListClienteRow, error) {
 }
 
 const listResena = `-- name: ListResena :one
-SELECT titulo, descripcion, nota, fecha 
+SELECT id, titulo, descripcion, nota, fecha 
 FROM RESENA
 WHERE (cliente_id = $1) and (titulo = $2)
 `
@@ -209,6 +209,7 @@ type ListResenaParams struct {
 }
 
 type ListResenaRow struct {
+	ID          int32     `json:"id"`
 	Titulo      string    `json:"titulo"`
 	Descripcion string    `json:"descripcion"`
 	Nota        int32     `json:"nota"`
@@ -220,6 +221,7 @@ func (q *Queries) ListResena(ctx context.Context, arg ListResenaParams) (ListRes
 	row := q.db.QueryRowContext(ctx, listResena, arg.ClienteID, arg.Titulo)
 	var i ListResenaRow
 	err := row.Scan(
+		&i.ID,
 		&i.Titulo,
 		&i.Descripcion,
 		&i.Nota,
@@ -229,12 +231,14 @@ func (q *Queries) ListResena(ctx context.Context, arg ListResenaParams) (ListRes
 }
 
 const listResenas = `-- name: ListResenas :many
-SELECT titulo, descripcion, nota, fecha 
+SELECT id, titulo, descripcion, nota, fecha 
 FROM RESENA
 WHERE (cliente_id = $1)
+ORDER BY fecha DESC
 `
 
 type ListResenasRow struct {
+	ID          int32     `json:"id"`
 	Titulo      string    `json:"titulo"`
 	Descripcion string    `json:"descripcion"`
 	Nota        int32     `json:"nota"`
@@ -252,10 +256,61 @@ func (q *Queries) ListResenas(ctx context.Context, clienteID int32) ([]ListResen
 	for rows.Next() {
 		var i ListResenasRow
 		if err := rows.Scan(
+			&i.ID,
 			&i.Titulo,
 			&i.Descripcion,
 			&i.Nota,
 			&i.Fecha,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listResenasRecientes = `-- name: ListResenasRecientes :many
+SELECT r.id, r.titulo, r.descripcion, r.nota, r.fecha, r.cliente_id, c.usuario
+FROM RESENA r
+JOIN CLIENTE c ON c.id = r.cliente_id
+ORDER BY r.fecha DESC
+LIMIT $1
+`
+
+type ListResenasRecientesRow struct {
+	ID          int32     `json:"id"`
+	Titulo      string    `json:"titulo"`
+	Descripcion string    `json:"descripcion"`
+	Nota        int32     `json:"nota"`
+	Fecha       time.Time `json:"fecha"`
+	ClienteID   int32     `json:"cliente_id"`
+	Usuario     string    `json:"usuario"`
+}
+
+// Consulta para listar las reseñas más recientes sin importar el cliente.
+func (q *Queries) ListResenasRecientes(ctx context.Context, limit int32) ([]ListResenasRecientesRow, error) {
+	rows, err := q.db.QueryContext(ctx, listResenasRecientes, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListResenasRecientesRow
+	for rows.Next() {
+		var i ListResenasRecientesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Titulo,
+			&i.Descripcion,
+			&i.Nota,
+			&i.Fecha,
+			&i.ClienteID,
+			&i.Usuario,
 		); err != nil {
 			return nil, err
 		}

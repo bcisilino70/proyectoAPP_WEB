@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	// "proyectoAPP_WEB/logica_neg/pkg/models"
 	sqlc "proyectoAPP_WEB/persistencia/db/sqlc"
@@ -259,22 +260,23 @@ func CrearResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
 		}
 
 		// 2. Validación en un solo if
-		if params.Titulo == "" || params.Descripcion == "" || params.Nota < 1 || params.Nota > 10 {
-			http.Error(w, `{"error":"Título, descripción son requeridos y la nota debe estar entre 1 y 10"}`, http.StatusBadRequest)
+		if params.Titulo == "" || params.Descripcion == "" || params.Nota < 1 || params.Nota > 5 {
+			http.Error(w, `{"error":"Título, descripción son requeridos y la nota debe estar entre 1 y 5"}`, http.StatusBadRequest)
 			return
 		}
 
-		// 3. Obtener el clienteID de la URL
-		clienteIDStr := r.URL.Query().Get("cliente_id")
-		if clienteIDStr == "" {
-			http.Error(w, `{"error":"cliente_id es requerido"}`, http.StatusBadRequest)
-			return
-		}
+		// 3. Verificar origen del clienteID: JSON o query string
+		if params.ClienteID <= 0 {
+			clienteIDStr := r.URL.Query().Get("cliente_id")
+			if clienteIDStr == "" {
+				http.Error(w, `{"error":"cliente_id es requerido"}`, http.StatusBadRequest)
+				return
+			}
 
-		_, err := fmt.Sscanf(clienteIDStr, "%d", &params.ClienteID)
-		if err != nil || params.ClienteID <= 0 {
-			http.Error(w, `{"error":"cliente_id inválido"}`, http.StatusBadRequest)
-			return
+			if _, err := fmt.Sscanf(clienteIDStr, "%d", &params.ClienteID); err != nil || params.ClienteID <= 0 {
+				http.Error(w, `{"error":"cliente_id inválido"}`, http.StatusBadRequest)
+				return
+			}
 		}
 
 		// 4. Crear la reseña en la BD (combinando JSON + URL)
@@ -316,40 +318,41 @@ func UpdateResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
 			return
 		}
 
-		if params.Nota < 1 || params.Nota > 10 {
-			http.Error(w, `{"error":"La nota debe estar entre 1 y 10"}`, http.StatusBadRequest)
+		if params.Nota < 1 || params.Nota > 5 {
+			http.Error(w, `{"error":"La nota debe estar entre 1 y 5"}`, http.StatusBadRequest)
 			return
 		}
 
-		// 3. Obtener el cliente_id de la URL
-		clienteIDStr := r.URL.Query().Get("cliente_id")
-		if clienteIDStr == "" {
-			http.Error(w, `{"error":"cliente_id es requerido"}`, http.StatusBadRequest)
-			return
+		// 3. Obtener el cliente_id desde JSON o URL
+		if params.ClienteID <= 0 {
+			clienteIDStr := r.URL.Query().Get("cliente_id")
+			if clienteIDStr == "" {
+				http.Error(w, `{"error":"cliente_id es requerido"}`, http.StatusBadRequest)
+				return
+			}
+
+			if _, err := fmt.Sscanf(clienteIDStr, "%d", &params.ClienteID); err != nil || params.ClienteID <= 0 {
+				http.Error(w, `{"error":"cliente_id inválido"}`, http.StatusBadRequest)
+				return
+			}
 		}
 
-		_, err := fmt.Sscanf(clienteIDStr, "%d", &params.ClienteID)
-		if err != nil || params.ClienteID <= 0 {
-			http.Error(w, `{"error":"cliente_id inválido"}`, http.StatusBadRequest)
-			return
-		}
+		// 4. Obtener el id de la reseña desde JSON o la URL
+		if params.ID <= 0 {
+			resenaIDStr := r.URL.Query().Get("id")
+			if resenaIDStr == "" {
+				http.Error(w, `{"error":"id de reseña es requerido"}`, http.StatusBadRequest)
+				return
+			}
 
-		// 4. Obtener el id de la reseña desde la URL
-		resenaIDStr := r.URL.Query().Get("id")
-		if resenaIDStr == "" {
-			http.Error(w, `{"error":"id de reseña es requerido"}`, http.StatusBadRequest)
-			return
-		}
-
-		_, err = fmt.Sscanf(resenaIDStr, "%d", &params.ID)
-		if err != nil || params.ID <= 0 {
-			http.Error(w, `{"error":"id de reseña inválido"}`, http.StatusBadRequest)
-			return
+			if _, err := fmt.Sscanf(resenaIDStr, "%d", &params.ID); err != nil || params.ID <= 0 {
+				http.Error(w, `{"error":"id de reseña inválido"}`, http.StatusBadRequest)
+				return
+			}
 		}
 
 		// 5. Actualizar la reseña en la BD
-		err = queries.UpdateResena(r.Context(), params)
-		if err != nil {
+		if err := queries.UpdateResena(r.Context(), params); err != nil {
 			http.Error(w, `{"error":"Error al actualizar la reseña"}`, http.StatusInternalServerError)
 			return
 		}
@@ -406,5 +409,27 @@ func DeleteResenaHandler(queries *sqlc.Queries) http.HandlerFunc {
 
 		// 4. Respuesta 204 No Content (sin body)
 		w.WriteHeader(http.StatusNoContent) // 204
+	}
+}
+
+// --- GET RESEÑAS RECIENTES --- //
+func ResenasRecientesHandler(queries *sqlc.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		limite := int32(10)
+		if limitStr := r.URL.Query().Get("limit"); limitStr != "" {
+			if parsed, err := strconv.Atoi(limitStr); err == nil && parsed > 0 {
+				limite = int32(parsed)
+			}
+		}
+
+		resenas, err := queries.ListResenasRecientes(r.Context(), limite)
+		if err != nil {
+			http.Error(w, "Error al obtener las reseñas recientes", http.StatusInternalServerError)
+			return
+		}
+
+		json.NewEncoder(w).Encode(resenas)
 	}
 }

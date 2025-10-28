@@ -39,15 +39,24 @@ WHERE (id = $4) AND (cliente_id = $5);
 
 -- Consulta para listar TODAS resenas de un cliente.
 -- name: ListResenas :many
-SELECT titulo, descripcion, nota, fecha 
+SELECT id, titulo, descripcion, nota, fecha 
 FROM RESENA
-WHERE (cliente_id = $1);
+WHERE (cliente_id = $1)
+ORDER BY fecha DESC;
 
 -- Consulta para listar UNA resena de un cliente.
 -- name: ListResena :one
-SELECT titulo, descripcion, nota, fecha 
+SELECT id, titulo, descripcion, nota, fecha 
 FROM RESENA
 WHERE (cliente_id = $1) and (titulo = $2);
+
+-- Consulta para listar las reseñas más recientes sin importar el cliente.
+-- name: ListResenasRecientes :many
+SELECT r.id, r.titulo, r.descripcion, r.nota, r.fecha, r.cliente_id, c.usuario
+FROM RESENA r
+JOIN CLIENTE c ON c.id = r.cliente_id
+ORDER BY r.fecha DESC
+LIMIT $1;
 
 -- Consulta para borrar una resena. 
 -- name: DeleteResena :exec
