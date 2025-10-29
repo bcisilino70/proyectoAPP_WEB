@@ -120,3 +120,35 @@ db-see-data:
 	@echo ""
 	@echo "--- RESEÑAS ---"
 	docker exec $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) -c "SELECT * FROM resenas;"
+
+# Ejecucion de HURL requests.
+hurl-req:
+	@echo "🌐 EJECUTANDO SOLICITUDES HURL..."
+	hurl -v logica_neg/hurl/requests.hurl
+	@echo "✅ SOLICITUDES COMPLETADAS!"
+
+# Ejecucion de HURL requests deletes.
+hurl-req-del:
+	@echo "🌐 EJECUTANDO ELIMINACIONES HURL..."
+	hurl -v logica_neg/hurl/requests_deletes.hurl
+	@echo "✅ ELIMINACIONES COMPLETADAS!"
+
+# Ejecucion HURL listado clientes
+hurl-cli:
+	@echo "🌐 EJECUTANDO LISTADO DE CLIENTES CON HURL..."
+	hurl -v logica_neg/hurl/listar_cli.hurl
+	@echo "✅ LISTADO COMPLETADO!"	
+
+# Ejecucion HURL listado reseñas
+hurl-res:
+	@echo "🌐 EJECUTANDO LISTADO DE RESEÑAS"	
+	hurl -v logica_neg/hurl/listar_res.hurl
+	@echo "✅ LISTADO COMPLETADO!"
+
+# Ejecucion para borrar la tabla Clientes y Reseñas
+db-clean-tablas:
+	@echo "🌐 BORRANDO INFO DE LAS TABLAS CLIENTES Y RESEÑAS..."
+	@echo "🔗 CONECTANDO A LA BASE DE DATOS..."
+	docker exec -it $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) -c "TRUNCATE TABLE CLIENTE, RESENA RESTART IDENTITY CASCADE;"
+	@echo "✅ TABLAS ELIMINADAS!"
+
