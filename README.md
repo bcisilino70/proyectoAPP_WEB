@@ -1,16 +1,30 @@
 # proyectoAPP_WEB
 
-# NIVEL DE DATOS
-
 ## Ejecucion con MAKEFILE
 
-* Para el correcto uso de los Make sugerimos hacer un **make all**, lo que dejara la pagina web activa y creara el contenedor con la base de datos. 
-* Luego ejecutar **solo una vez** el **make hurl-req** para crear entidades y verificar que funcione (para poder ejecutarlo de nuevo se deben borrar las filas de las tablas Cliente y Resena con **make db-clean-tablas**). 
-* En tercer lugar probar los delete con **make hurl-req-del**. 
-* Posterior al uso de los HURL, recomendamos ir a la pagina web y utilizarla donde se veran las entidades creadas por los HURL. La pagina mostrara la opcion de registarse donde puede inventar un usuario y luego accedera al panel de usuario con las funcionalidades. 
-* En cualquier momento se puede utilizar **MAKE HURL-CLI:** para listar todos los clientes y **MAKE HURL-RES:** para listar todas las resenas.
+* Primer paso : ejecutar **"make all"** en la terminal de comandos.
 
- 1. **MAKE ALL:** Ejecuta en orden: make destroy (Borra el contenedor y la base de datos) -> make setup (Crea contenedor, otorga privilegios, ejecuta el schema) -> make run_logica (Ejecuta la capa de logica de negocio). 
+    Lo que dejara la pagina web activa y creara el contenedor con la base de datos. Importante dejar la terminal abierta para mantener el servidor activo
+
+* Luego ejecutar **solo una vez y en otra terminal** el comando **"make hurl-req"** para crear las entidades cliente y resena de ejemplo.
+    
+    para poder ejecutarlo de nuevo se deben borrar las filas de las tablas Cliente y Resena con **"make db-clean-tablas"**
+
+* En tercer lugar probar los delete con **"make hurl-req-del"**. 
+
+---TP4---
+
+* Posterior al uso de los HURL, y con el servidor ya activo **"make all"**, para acceder al front-end se debe acceder al siguiente link en un navegador web : http://localhost:8080/ 
+La pagina mostrara la opcion de registarse donde puede inventar un usuario y luego acceder al panel de usuario con las funcionalidades.
+
+* En cualquier momento se puede utilizar **"make hurl-cli"** para listar todos los clientes y **"make hurl-res"** para listar todas las resenas.
+
+
+
+
+---algunos comentarios de que ejecuta cada make---
+
+1. **MAKE ALL:** Ejecuta en orden: make destroy (Borra el contenedor y la base de datos) -> make setup (Crea contenedor, otorga privilegios, ejecuta el schema) -> make run_logica (Ejecuta la capa de logica de negocio). 
  
     **Resultado por consola:** Levanta el servidor y se puede abrir en el navegador la pagina web. 
 
@@ -25,18 +39,3 @@
 6. **MAKE HURL-RES:** Lista todas las resenas
 
 
-
-### Dudas sobre queries.sql
-
-* Solo se dejan las consultas con todas las restricciones que se necesiten, por ejemplo una duda era que pasa con Update Resena donde uno como cliente solo da el titulo de la resena pero la base de datos debe buscar ( con el where ) el ID_CLIENTE correspondiente al cliente que quiere cambiar la resena. Como se busca este id_cliente? 
-    * Autenticación y autorización: Implementa un sistema de autenticación que permita identificar al cliente y obtener su id en el backend.
-    * ¿Cómo se relaciona la autenticación con las consultas SQL? Se ocupa el backend pero en GO 
-        
-        Autenticación:
-
-        El sistema de autenticación (por ejemplo, manejo de sesiones o tokens JWT) se encarga de identificar al cliente cuando inicia sesión.
-        Una vez autenticado, el backend puede obtener el cliente_id del usuario autenticado y usarlo para las consultas SQL.
-        Uso del cliente_id en las consultas:
-
-        En tus consultas SQL (queries.sql), el cliente_id debe ser un parámetro obligatorio para las operaciones relacionadas con reseñas.
-        Sin embargo, el valor de este parámetro no lo proporciona directamente el cliente, sino que el backend lo inyecta automáticamente al ejecutar la consulta.

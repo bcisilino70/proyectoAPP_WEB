@@ -358,7 +358,7 @@ function mostrarDetalleCliente() {
     const partes = [nombre, apellido].filter(Boolean).join(' ');
     const usuarioTexto = usuario ? ` (@${usuario})` : '';
     const emailTexto = email ? ` Email: ${email}` : '';
-    destino.textContent = `Estás logueado como ${partes || 'usuario'}${usuarioTexto}. Tu ID interno es ${id}.${emailTexto}`;
+    destino.textContent = `Estás logueado como ${partes || 'usuario'}${usuarioTexto}.`;
 }
 
 function guardarClienteEnLocalStorage(cliente) {
