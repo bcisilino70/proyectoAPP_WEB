@@ -1,5 +1,37 @@
 # proyectoAPP_WEB
 
+## Prerrequisitos
+
+Antes de ejecutar el proyecto asegurate de tener instalado:
+
+- Docker (Engine y Docker Compose)
+- Make
+- Hurl (para ejecutar los requests de prueba)
+- Git (solo para la opción de clonar el repositorio)
+
+
+## Opción A: Clonar el repositorio y ejecutarlo
+
+1) Clonar el repo y entrar a la carpeta del proyecto:
+```bash
+git clone <URL_DEL_REPOSITORIO>
+cd <NOMBRE_DE_LA_CARPETA_DEL_PROYECTO>
+```
+
+2) Seguí la sección "Ejecucion con MAKEFILE" (más abajo):
+
+
+## Opción B: Ejecutar desde un ZIP del proyecto
+
+1) Descomprimir el ZIP en una carpeta local y entrar a la carpeta:
+```bash
+unzip <NOMBRE_DEL_ARCHIVO>.zip -d <CARPETA_DESTINO>
+cd <CARPETA_DESTINO>/<NOMBRE_DE_LA_CARPETA_DEL_PROYECTO>
+```
+
+2) Seguí la sección "Ejecucion con MAKEFILE" (más abajo):
+
+
 ## Ejecucion con MAKEFILE
 
 * Primer paso : ejecutar **"make all"** en la terminal de comandos.
@@ -19,9 +51,6 @@ La pagina mostrara la opcion de registarse donde puede inventar un usuario y lue
 
 * En cualquier momento se puede utilizar **"make hurl-cli"** para listar todos los clientes y **"make hurl-res"** para listar todas las resenas.
 
-
-
-
 ---algunos comentarios de que ejecuta cada make---
 
 1. **MAKE ALL:** Ejecuta en orden: make destroy (Borra el contenedor y la base de datos) -> make setup (Crea contenedor, otorga privilegios, ejecuta el schema) -> make run_logica (Ejecuta la capa de logica de negocio). 
@@ -38,4 +67,17 @@ La pagina mostrara la opcion de registarse donde puede inventar un usuario y lue
 
 6. **MAKE HURL-RES:** Lista todas las resenas
 
+## Notas y solucion de problemas
 
+- Si el puerto 8080 ya está en uso, cerrá el proceso que lo esté usando o cambiá la configuración del puerto si el proyecto lo permite.
+- Si quedaron contenedores o datos previos y hay errores al iniciar, probá:
+```bash
+make destroy
+make all
+```
+- Para volver a correr los Hurl de creación sin errores por duplicados:
+```bash
+make db-clean-tablas
+make hurl-req
+```
+- Verificá que Docker esté corriendo antes de ejecutar `make all`.
