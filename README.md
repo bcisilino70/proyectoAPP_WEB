@@ -70,14 +70,3 @@ La pagina mostrara la opcion de registarse donde puede inventar un usuario y lue
 ## Notas y solucion de problemas
 
 - Si el puerto 8080 ya está en uso, cerrá el proceso que lo esté usando o cambiá la configuración del puerto si el proyecto lo permite.
-- Si quedaron contenedores o datos previos y hay errores al iniciar, probá:
-```bash
-make destroy
-make all
-```
-- Para volver a correr los Hurl de creación sin errores por duplicados:
-```bash
-make db-clean-tablas
-make hurl-req
-```
-- Verificá que Docker esté corriendo antes de ejecutar `make all`.
