@@ -148,6 +148,12 @@ button:active {
     }
 }
 
+/* Fuerza que todas las columnas del panel tengan el mismo ancho visual */
+.panel-grid > * {
+    width: 100%;
+    min-width: 0;
+}
+
 .grid-item h2 {
     font-size: 1.25rem;
     color: #102a43;

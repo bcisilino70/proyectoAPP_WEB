@@ -1,0 +1,23 @@
+package views
+
+// Layout es el componente base para todas las páginas, sin dependencias de JavaScript.
+templ Layout(title string) {
+    <!DOCTYPE html>
+    <html lang="es">
+        <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>{ title }</title>
+            // La hoja de estilos se mantiene, ya que es solo para presentación visual
+            // y es procesada por el navegador sin necesidad de scripting.
+            <link rel="stylesheet" href="/static/styles.css"/>
+        </head>
+        <body>
+            <div class="page-wrapper">
+                // El contenido específico de la página, renderizado en el servidor,
+                // se insertará aquí.
+                { children... }
+            </div>
+        </body>
+    </html>
+}

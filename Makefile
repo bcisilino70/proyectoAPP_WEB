@@ -71,7 +71,7 @@ setup:
 run_logica: 
 	@echo "🚀 EJECUTANDO APLICACIÓN NIVEL CAPA DE LOGICA DE NEGOCIOS..."
 	@echo "=========================================="
-	go run ./cmd/server/main.go
+	go run ./main.go
 	@echo "✅ EJECUCIÓN COMPLETADA!"
 
 # Ejecutar tests
@@ -116,10 +116,10 @@ db-connect:
 db-see-data:
 	@echo "👀 VISUALIZANDO DATOS..."
 	@echo "--- CLIENTES ---"
-	docker exec $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) -c "SELECT * FROM clientes;"
+	docker exec $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) -c "SELECT * FROM cliente;"
 	@echo ""
 	@echo "--- RESEÑAS ---"
-	docker exec $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) -c "SELECT * FROM resenas;"
+	docker exec $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) -c "SELECT * FROM resena;"
 
 # Ejecucion de HURL requests.
 hurl-req:

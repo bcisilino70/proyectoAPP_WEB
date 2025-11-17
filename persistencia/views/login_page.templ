@@ -1,0 +1,12 @@
+package views
+
+templ LoginForm() {
+    <section class="section-card">
+        <h2>Acceder a mi cuenta</h2>
+        <form action="/login" method="POST">
+            <label>Usuario: <input type="text" name="usuario" required/></label>
+            <label>Contraseña: <input type="password" name="contrasena" required/></label>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+    </section>
+}

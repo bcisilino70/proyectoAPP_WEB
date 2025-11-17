@@ -1,0 +1,31 @@
+package views
+
+// Importamos los "models" generados por sqlc
+import "proyectoAPP_WEB/persistencia/db/sqlc"
+
+// UserPage muestra la página de usuario con sus reseñas y las reseñas recientes. 
+templ UserPage(username string, misResenas []db.ListResenasRow, resenasRecientes []db.ListResenasRecientesRow) {
+    @Layout("Página de Usuario") {
+        <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>Panel de Usuario - Reseñas de Tandil</title>
+            <link rel="stylesheet" href="/styles.css"/>
+        </head>
+        <body>
+            <div class="page-wrapper">
+                <h1 class="page-title">Panel de Usuario</h1>
+                <div class="panel-grid">
+                    
+                    @CrearEditarResena()
+
+                    @MisResenas(misResenas)
+                    
+                    @RecientesResenas(resenasRecientes)
+                    
+                    @Perfil()
+                </div>
+            </div>
+        </body>
+    }
+}
