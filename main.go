@@ -2,11 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
+	_ "github.com/lib/pq"
 	"log"
 	"net/http"
-
-	_ "github.com/lib/pq"
-
+	"os"
 	"proyectoAPP_WEB/persistencia/handlers"
 )
 
@@ -20,18 +20,26 @@ DB_ADMIN = app_admin
 ADMIN_PASSWORD = admin_pass
 DB_PORT = 5432
 */
+
 func main() {
 	//Inicializar el servidor HTTP
 	fs := http.FileServer(http.Dir("./persistencia/views"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+	// Lógica para determinar el host de la DB
+	dbHost := os.Getenv("DB_HOST")
+	if dbHost == "" {
+		dbHost = "localhost" // Fallback para ejecución local sin Docker
+	}
+
 	//Inicializar base de datos.
-	connStr := "host=localhost port=5432 user=app_user password=app_pass dbname=app_db sslmode=disable"
+	connStr := fmt.Sprintf("host=%s port=5432 user=app_user password=app_pass dbname=app_db sslmode=disable", dbHost)
+
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("Error al conectar a la base de datos: %v", err)
 	}
 	defer db.Close()
-
 	handlers.InitDB(db)
 	http.HandleFunc("/", handlers.HomeHandler)
 	http.HandleFunc("/register", handlers.RegisterHandler)

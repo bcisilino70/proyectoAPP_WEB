@@ -1,154 +1,33 @@
-# Makefile para Persistencia de Datos
-# Automatización completa del flujo
+.PHONY: all up down logs clean db-data
 
-# Variables de configuración
-CONTAINER_NAME = app_postgres
-DB_NAME = app_db
-DB_USER = app_user
-DB_PASSWORD = app_pass
-DB_ADMIN = app_admin
-ADMIN_PASSWORD = admin_pass
-DB_PORT = 5432
-
-.PHONY: help all setup run test clean destroy
-
-# Ayuda - muestra todos los comandos
-help:
-	@echo "🚀 COMANDOS DISPONIBLES:"
-	@echo "  make all      - Flujo completo: setup + run + test + destroy"
-	@echo "  make setup    - Crear contenedor y configurar BD"
-	@echo "  make run      - Ejecutar la aplicación"
-	@echo "  make test     - Ejecutar tests"
-	@echo "  make clean    - Limpiar archivos temporales"
-	@echo "  make destroy  - Eliminar contenedor y recursos"
-	@echo "  make status   - Ver estado del contenedor"
-
-# Flujo completo automático
 all:
-	@echo "🎯 INICIANDO FLUJO COMPLETO AUTOMÁTICO..."
-	@echo "=========================================="
-	@echo ""
-	$(MAKE) destroy
-	@echo ""
-	$(MAKE) setup
-	@echo ""
-	$(MAKE) run_logica
-	@echo "✅ FLUJO COMPLETADO EXITOSAMENTE!"
+	@make down
+	@make up
+	@echo " Esperando 5 segundos a que la base de datos inicie."
+	@sleep 5
+	@make test
+	@make db-data
+# Levanta los servicios con Docker Compose
+up:
+	@echo "🚀 Levantando entorno con Docker Compose..."
+	docker compose up --build -d
+	@echo "✅ Servidor corriendo en http://localhost:8080"
 
-# Configuración inicial
-setup:
-	@echo "🐳 CONFIGURANDO ENTORNO..."
-	
-	@# 1. Crear contenedor PostgreSQL
-	@echo "1. Creando contenedor PostgreSQL..."
-	docker run --name $(CONTAINER_NAME) \
-		-e POSTGRES_DB=$(DB_NAME) \
-		-e POSTGRES_USER=$(DB_USER) \
-		-e POSTGRES_PASSWORD=$(DB_PASSWORD) \
-		-p $(DB_PORT):5432 \
-		-d postgres:13
-	
-	@# 2. Esperar que PostgreSQL esté listo
-	@echo "2. Esperando que PostgreSQL esté listo..."
-	@sleep 10
-	
-	@# 3. Crear usuario admin y otorgar privilegios
-	@echo "3. Configurando usuario administrador..."
-	echo "CREATE USER $(DB_ADMIN) WITH PASSWORD '$(ADMIN_PASSWORD)';" | \
-	docker exec -i $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME)
-	echo "GRANT ALL PRIVILEGES ON DATABASE $(DB_NAME) TO $(DB_ADMIN);" | \
-	docker exec -i $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME)
-	
-	@# 4. Ejecutar schema.sql
-	@echo "4. Creando tablas con schema.sql..."
-	docker exec -i $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) < persistencia/db/schema/schema.sql
-	
-	@echo "✅ CONFIGURACIÓN COMPLETADA!"
-	@echo "   Contenedor: $(CONTAINER_NAME)"
-	@echo "   Base de datos: $(DB_NAME)"
-	@echo "   Puerto: $(DB_PORT)"
+# Detiene y elimina los contenedores
+down:
+	@echo "🛑 Deteniendo servicios..."
+	docker compose down
 
-run_logica: 
-	@echo "🚀 EJECUTANDO APLICACIÓN NIVEL CAPA DE LOGICA DE NEGOCIOS..."
-	@echo "=========================================="
-	go run ./main.go
-	@echo "✅ EJECUCIÓN COMPLETADA!"
-
-# Ejecutar tests
-test: setup
-	@echo "🧪 EJECUTANDO TESTS..."
-	@echo "=========================================="
-	go test -v ./...
-	@echo "✅ TESTS COMPLETADOS!"
-
-# Ver estado del contenedor
-status:
-	@echo "📊 ESTADO DEL CONTENEDOR:"
-	@docker ps -a --filter "name=$(CONTAINER_NAME)" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-
-# Limpiar archivos temporales
-clean:
-	@echo "🧹 LIMPIANDO ARCHIVOS TEMPORALES..."
-	go clean
-	rm -f *.log
-	@echo "✅ LIMPIEZA COMPLETADA!"
-
-# Destruir contenedor y recursos
-destroy:
-	@echo "🗑️  ELIMINANDO CONTENEDOR Y RECURSOS..."
-	@-docker stop $(CONTAINER_NAME) 2>/dev/null || true
-	@-docker rm $(CONTAINER_NAME) 2>/dev/null || true
-	@echo "✅ CONTENEDOR ELIMINADO: $(CONTAINER_NAME)"
-
-# Comando para desarrollo (solo setup, sin destroy)
-dev: setup
-	@echo "🔧 MODO DESARROLLO:"
-	@echo "   Contenedor activo: $(CONTAINER_NAME)"
-	@echo "   Puerto: $(DB_PORT)"
-	@echo "   Ejecuta 'make destroy' cuando termines"
-
-# Conectar a la base de datos
-db-connect:
-	@echo "🔗 CONECTANDO A LA BASE DE DATOS..."
-	docker exec -it $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME)
-
-# Ver datos de ejemplo
-db-see-data:
+# Ver datos de las tablas
+db-data:
 	@echo "👀 VISUALIZANDO DATOS..."
 	@echo "--- CLIENTES ---"
-	docker exec $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) -c "SELECT * FROM cliente;"
+	docker exec app_postgres_db psql -U app_user -d app_db -c "SELECT * FROM cliente;"
 	@echo ""
 	@echo "--- RESEÑAS ---"
-	docker exec $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) -c "SELECT * FROM resena;"
+	docker exec app_postgres_db psql -U app_user -d app_db -c "SELECT * FROM resena;"
 
-# Ejecucion de HURL requests.
-hurl-req:
-	@echo "🌐 EJECUTANDO SOLICITUDES HURL..."
-	hurl -v logica_neg/hurl/requests.hurl
-	@echo "✅ SOLICITUDES COMPLETADAS!"
-
-# Ejecucion de HURL requests deletes.
-hurl-req-del:
-	@echo "🌐 EJECUTANDO ELIMINACIONES HURL..."
-	hurl -v logica_neg/hurl/requests_deletes.hurl
-	@echo "✅ ELIMINACIONES COMPLETADAS!"
-
-# Ejecucion HURL listado clientes
-hurl-cli:
-	@echo "🌐 EJECUTANDO LISTADO DE CLIENTES CON HURL..."
-	hurl -v logica_neg/hurl/listar_cli.hurl
-	@echo "✅ LISTADO COMPLETADO!"	
-
-# Ejecucion HURL listado reseñas
-hurl-res:
-	@echo "🌐 EJECUTANDO LISTADO DE RESEÑAS"	
-	hurl -v logica_neg/hurl/listar_res.hurl
-	@echo "✅ LISTADO COMPLETADO!"
-
-# Ejecucion para borrar la tabla Clientes y Reseñas
-db-clean-tablas:
-	@echo "🌐 BORRANDO INFO DE LAS TABLAS CLIENTES Y RESEÑAS..."
-	@echo "🔗 CONECTANDO A LA BASE DE DATOS..."
-	docker exec -it $(CONTAINER_NAME) psql -U $(DB_USER) -d $(DB_NAME) -c "TRUNCATE TABLE CLIENTE, RESENA RESTART IDENTITY CASCADE;"
-	@echo "✅ TABLAS ELIMINADAS!"
-
+test:
+	@echo "🧪 Ejecutando tests de integración..."
+	hurl -v tests/cliente.hurl
+	hurl -v tests/resena.hurl
