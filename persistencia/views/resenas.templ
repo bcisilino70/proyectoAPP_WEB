@@ -1,0 +1,38 @@
+package views
+
+// Importamos los models de sqlc y strconv (para convertir números)
+import "proyectoAPP_WEB/persistencia/db/sqlc"
+import "strconv"
+
+// Mis Resenas muestra las reseñas del usuario. necesita un argumento con la lista de reseñas.
+templ MisResenas(resenas []db.ListResenasRow) {
+    <div class="grid-item">
+        <h2>Mis Reseñas</h2>
+        
+        if len(resenas) == 0 {
+            <div id="mis-resenas" class="empty-state">
+                Todavía no cargaste reseñas.
+            </div>
+        } else {
+            <div id="mis-resenas">
+                for _, resena := range resenas {
+                    <div class="resena-item">
+                        <h3>{ resena.Titulo }</h3>
+                        <p>{ resena.Descripcion }</p>
+                        <p>Nota: { strconv.Itoa(int(resena.Nota)) }/5</p>
+                        <small>Fecha: { resena.Fecha.Format("02-01-2006") }</small>
+                        
+                        <div class="resena-acciones">
+                            //<button class="btn-editar">Editar</button>
+                            <form action="/eliminar-resena" method="POST" style="display: inline;">
+                                <input type="hidden" name="resena_id" value={ strconv.Itoa(int(resena.ID)) } />
+                                <button type="submit" class="btn-eliminar">Eliminar</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+}

@@ -1,0 +1,28 @@
+package views
+
+import "proyectoAPP_WEB/persistencia/db/sqlc"
+import "strconv"
+
+// Recientes Resenas muestra las reseñas recientes. necesita un argumento con la lista de reseñas.
+templ RecientesResenas(resenas []db.ListResenasRecientesRow) {
+    <div class="grid-item">
+        <h2>Reseñas recientes</h2>
+
+        if len(resenas) == 0 {
+            <div id="resenas-recientes" class="empty-state">
+                No hay reseñas recientes.
+            </div>
+        } else {
+            <div id="resenas-recientes">
+                for _, resena := range resenas {
+                    <div class="resena-item">
+                        <h3>{ resena.Titulo }</h3>
+                        <p>{ resena.Descripcion }</p>
+                        <p>Nota: { strconv.Itoa(int(resena.Nota)) }/5</p>
+                        <small>Por: <strong>{ resena.Usuario }</strong></small>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,24 @@
+package views
+
+templ Perfil(){
+    @Layout("Perfil de Usuario") {
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Perfil de Usuario - Reseñas de Tandil</title>
+            <link rel="stylesheet" href="/styles.css">
+        </head>
+        <body>
+                    <div class="grid-item">
+                        <h2>Mi Perfil</h2>
+                        <form id="form-actualizar-email" method="POST" action="/actualizar-email">
+                            <label>Correo electrónico:
+                                <input type="email" name="email" required>
+                            </label>
+                            <button type="submit">Actualizar email</button>
+                        </form>
+                        <p id="mensaje-perfil"></p>
+                    </div>
+        </body>
+    }
+}
