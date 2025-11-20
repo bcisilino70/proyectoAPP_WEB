@@ -1,27 +1,27 @@
-# 1. Loguearse primero para tener sesión
+# 1. Loguearse primero para tener sesion
 POST http://localhost:8080/login
 [FormParams]
 usuario: bauto
 contrasena: password123
 HTTP 303
 
-# 2. Crear una reseña
+# 2. Crear una resena
 POST http://localhost:8080/crear-resena
 [FormParams]
-titulo: Reseña de prueba Hurl
-descripcion: Esta es una reseña automática
+titulo: Resena de prueba Hurl
+descripcion: Esta es una resena automatica
 nota: 5
 HTTP 303
 
-# 3. Crear una reseña para eliminar
+# 3. Crear una resena para eliminar
 POST http://localhost:8080/crear-resena
 [FormParams]
-titulo: Reseña para borrar
-descripcion: Esta reseña será eliminada
+titulo: Resena para borrar
+descripcion: Esta reseña sera eliminada
 nota: 1
 HTTP 303
 
-# 4. Eliminar la reseña (usa el ID correcto)
+# 4. Eliminar la resena (usa el ID correcto)
 POST http://localhost:8080/eliminar-resena
 [FormParams]
 resena_id: 2

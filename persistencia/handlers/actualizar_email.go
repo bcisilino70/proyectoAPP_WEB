@@ -12,11 +12,11 @@ import (
 func ActualizarEmailHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. Solo aceptamos POST
 	if r.Method != http.MethodPost {
-		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
+		http.Error(w, "Metodo no permitido", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// 2. Obtener el ID del cliente desde la cookie de sesión ("uid")
+	// 2. Obtener el ID del cliente desde la cookie de sesion ("uid")
 	cookie, err := r.Cookie("uid")
 	if err != nil {
 		http.Error(w, "No autenticado", http.StatusUnauthorized)
@@ -24,24 +24,24 @@ func ActualizarEmailHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	clienteID, err := strconv.Atoi(cookie.Value)
 	if err != nil {
-		http.Error(w, "ID de usuario inválido", http.StatusBadRequest)
+		http.Error(w, "ID de usuario invalido", http.StatusBadRequest)
 		return
 	}
 
 	// 3. Leer y parsear los datos del formulario
 	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Formulario inválido", http.StatusBadRequest)
+		http.Error(w, "Formulario invalido", http.StatusBadRequest)
 		return
 	}
 
 	// 4. Obtener el nuevo email del formulario (el 'name' del input)
 	nuevoEmail := r.FormValue("email")
 	if nuevoEmail == "" {
-		http.Error(w, "El email no puede estar vacío", http.StatusBadRequest)
+		http.Error(w, "El email no puede estar vacio", http.StatusBadRequest)
 		return
 	}
 
-	// 5. Preparar los parámetros para la consulta SQLC
+	// 5. Preparar los parametros para la consulta SQLC
 	//    (La consulta 'UpdateCliente' espera Email y ID)
 	params := db.UpdateClienteParams{
 		Email: nuevoEmail,
@@ -53,7 +53,7 @@ func ActualizarEmailHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error al actualizar email: %v", err)
 		// El error más común aquí sería un email duplicado (UNIQUE constraint)
-		http.Error(w, "No se pudo actualizar el email (email duplicado u otro error)", http.StatusInternalServerError)
+		http.Error(w, "No se pudo actualizar el email", http.StatusInternalServerError)
 		return
 	}
 

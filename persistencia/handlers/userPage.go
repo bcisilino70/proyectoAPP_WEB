@@ -1,11 +1,10 @@
 package handlers
 
 import (
-	"log" // <-- AÑADIDO
+	"log"
 	"net/http"
-	"strconv" // <-- AÑADIDO
+	"strconv"
 
-	// db "proyectoAPP_WEB/persistencia/db/sqlc" // <-- AÑADIDO (Ver nota abajo)
 	"proyectoAPP_WEB/persistencia/views"
 )
 
@@ -26,40 +25,34 @@ func UserPageHandler(w http.ResponseWriter, r *http.Request) {
 	clienteID := int32(clienteID_64)
 
 	// 3. Crear un "username" simple
-	username := "Usuario" + cookie.Value // Opcional: podrías hacer un GetCliente para buscar su nombre real
+	username := "Usuario" + cookie.Value
 
-	// 4. === INICIO DE LA NUEVA LÓGICA (CUMPLE EL PUNTO 2) ===
-
-	// 4a. Obtener la lista de "Mis Reseñas" usando sqlc
-	//     (queries es la variable global de tu paquete 'handlers')
+	// 4. Obtener la lista de "Mis Reseñas" usando sqlc
 	misResenas, err := queries.ListResenas(r.Context(), clienteID)
 	if err != nil {
 		log.Printf("Error al obtener ListResenas: %v", err)
-		http.Error(w, "Error al cargar tus reseñas", http.StatusInternalServerError)
+		http.Error(w, "Error al cargar tus resenas", http.StatusInternalServerError)
 		return
 	}
 
-	// 4b. Obtener las reseñas recientes de todos (ej. las últimas 10)
-	//     (10 es el parámetro 'LIMIT $1' de tu consulta sqlc)
+	// Obtener las resenas recientes de todos (ej. las ultimas 10)
 	resenasRecientes, err := queries.ListResenasRecientes(r.Context(), 10)
 	if err != nil {
 		log.Printf("Error al obtener ListResenasRecientes: %v", err)
 		http.Error(w, "Error al cargar reseñas recientes", http.StatusInternalServerError)
 		return
 	}
-	// === FIN DE LA NUEVA LÓGICA ===
 
-	// 5. Renderizar el componente principal de la página de usuario
-	//    PASÁNDOLE LOS DATOS OBTENIDOS
+	// 5. Renderizar el componente principal de la pagina de usuario
+	//    PASANDOLE LOS DATOS OBTENIDOS
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	// --- MODIFICADO ---
-	// Ahora pasamos los slices de reseñas al componente Templ
+	// Ahora pasamos los slices de resenas al componente Templ
 	componente := views.UserPage(username, misResenas, resenasRecientes)
 	err = componente.Render(r.Context(), w)
 
 	if err != nil {
 		log.Printf("Error al renderizar UserPage: %v", err)
-		http.Error(w, "Error al renderizar la página", http.StatusInternalServerError)
+		http.Error(w, "Error al renderizar la pagina", http.StatusInternalServerError)
 	}
 }

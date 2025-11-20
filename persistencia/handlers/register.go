@@ -20,11 +20,11 @@ func InitDB(sqlDB *sql.DB) {
 // RegisterHandler procesa POST /register
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
+		http.Error(w, "Metodo no permitido", http.StatusMethodNotAllowed)
 		return
 	}
 	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Formulario inválido", http.StatusBadRequest)
+		http.Error(w, "Formulario invalido", http.StatusBadRequest)
 		return
 	}
 	p := db.CreateClienteParams{
@@ -37,7 +37,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	cli, err := queries.CreateCliente(r.Context(), p)
 	if err != nil {
 		log.Printf("error CreateCliente: %v", err)
-		http.Error(w, "No se pudo registrar (email duplicado u otro error)", http.StatusBadRequest)
+		http.Error(w, "No se pudo registrar", http.StatusBadRequest)
 		return
 	}
 
@@ -56,11 +56,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 // LoginHandler procesa POST /login
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
+		http.Error(w, "Metodo no permitido", http.StatusMethodNotAllowed)
 		return
 	}
 	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Formulario inválido", http.StatusBadRequest)
+		http.Error(w, "Formulario invalido", http.StatusBadRequest)
 		return
 	}
 	p := db.GetClienteUsuarioYPassParams{
@@ -69,12 +69,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	cli, err := queries.GetClienteUsuarioYPass(r.Context(), p)
 	if err != nil {
-		log.Printf("login inválido: %v", err)
-		http.Error(w, "Usuario o contraseña incorrectos", http.StatusUnauthorized)
+		log.Printf("login invalido: %v", err)
+		http.Error(w, "Usuario o contrasena incorrectos", http.StatusUnauthorized)
 		return
 	}
 
-	// Guardar ID en cookie de sesión simple
+	// Guardar ID en cookie de seion simple
 	http.SetCookie(w, &http.Cookie{
 		Name:     "uid",
 		Value:    fmt.Sprint(cli.ID),
@@ -83,6 +83,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	// Redirigir a la página principal o de usuario
+	// Redirigir a la pagina principal o de usuario
 	http.Redirect(w, r, "/userpage", http.StatusSeeOther)
 }

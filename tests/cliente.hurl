@@ -12,7 +12,7 @@ mail: test@email.com
 contrasena: password123
 HTTP 303
 
-# 3. Iniciar sesión (Login)
+# 3. Iniciar sesion (Login)
 POST http://localhost:8080/login
 [FormParams]
 usuario: bauto

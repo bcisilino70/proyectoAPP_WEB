@@ -7,16 +7,20 @@ all:
 	@sleep 5
 	@make test
 	@make db-data
+	@echo ""
+	@echo "========================================"
+	@echo "Servidor disponible en: http://localhost:8080"
+	@echo "========================================"
 # Levanta los servicios con Docker Compose
 up:
 	@echo "🚀 Levantando entorno con Docker Compose..."
-	docker compose up --build -d
+	docker-compose up --build -d
 	@echo "✅ Servidor corriendo en http://localhost:8080"
 
 # Detiene y elimina los contenedores
 down:
 	@echo "🛑 Deteniendo servicios..."
-	docker compose down
+	docker-compose down
 
 # Ver datos de las tablas
 db-data:
