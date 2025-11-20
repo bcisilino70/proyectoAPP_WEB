@@ -2,25 +2,34 @@
 
 ## Ejecución con Docker Compose
 
-Ahora el proyecto está dockerizado completo (App + Base de datos), así que es mucho más fácil de levantar, `docker-compose` se encarga de todo.
+El proyecto está completamente dockerizado (App + Base de datos), facilitando su despliegue y pruebas mediante `docker compose` con version Docker Compose version v2.27.1. 
 
 ### Comandos Principales
 
-1. **`make up`**:
-   Este es el comando principal. Levanta todo el entorno (la base de datos Postgres y la app en Go) usando Docker Compose.
-   *   Si es la primera vez, va a construir la imagen y configurar la base de datos automáticamente con el `schema.sql`.
-   *   **Resultado:** El servidor queda corriendo en segundo plano y puedes entrar a la web en `http://localhost:8080`.
+1. **`make all`** (Recomendado para corrección):
+   Este comando ejecuta el ciclo completo de prueba:
+   1. Detiene cualquier contenedor previo (`make down`).
+   2. Levanta el entorno limpio (`make up`).
+   3. Espera a que la base de datos esté lista.
+   4. Ejecuta los tests de integración con Hurl (`make test`).
+   5. Muestra el estado final de la base de datos (`make db-data`).
 
-2. **`make down`**:
-   Baja y apaga todos los contenedores. IMPORTANTE : Usalo cuando termines de trabajar para liberar recursos.
+2. **`make up`**:
+   Levanta todo el entorno (Postgres + App Go) en segundo plano.
+   *   **Resultado:** El servidor queda corriendo en `http://localhost:8080`.
 
-3. **`make test`**:
-   
+3. **`make down`**:
+   Detiene y elimina los contenedores para liberar recursos.
 
-4. **`make db-data`**:
-   Comando útil para ver rápido qué datos hay cargados en las tablas `cliente` y `resena` sin tener que entrar a la base manualmente.
+4. **`make test`**:
+   Ejecuta los scripts de prueba de integración (`cliente.hurl` y `resena.hurl`) para validar el funcionamiento de los endpoints.
 
+5. **`make db-data`**:
+   Muestra en consola el contenido actual de las tablas `cliente` y `resena` para verificar la persistencia de datos.
 
 ### Cómo probarlo
-Simplemente ejecutar `make up`, esperar unos segundos a que levante todo, luego entrar al navegador a probar la app (registrarse, crear reseñas, etc). Si se requiere ver que se guardaron bien en la base de datos, ejecutar un `make db-data`.
 
+**Opción A (Automática):**
+Ejecutar simplemente:
+```bash
+make all
