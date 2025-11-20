@@ -35,6 +35,8 @@ cd <CARPETA_DESTINO>/<NOMBRE_DE_LA_CARPETA_DEL_PROYECTO>
 
 El proyecto está completamente dockerizado (App + Base de datos), facilitando su despliegue y pruebas mediante `docker compose` con version Docker Compose version v2.27.1. 
 
+**Nota sobre versiones:** El proyecto utiliza la sintaxis `docker compose`. Si se tiene instalada una versión antigua de Docker y el comando falla, intenta usar `docker-compose` (con guion) : en el Makefile reemplazando `docker compose` por `docker-compose`.
+
 ### Comandos Principales
 
 1. **`make all`** (Recomendado para corrección):
