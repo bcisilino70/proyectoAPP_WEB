@@ -5,9 +5,9 @@ HTTP 200
 # 2. Registrar un usuario nuevo
 POST http://localhost:8080/register
 [FormParams]
-nombre : Bautista
+nombre : Juan
 apellido : Rodriguez
-usuario : bauto
+usuario : juanro
 mail: test@email.com
 contrasena: password123
 HTTP 303
@@ -15,6 +15,6 @@ HTTP 303
 # 3. Iniciar sesion (Login)
 POST http://localhost:8080/login
 [FormParams]
-usuario: bauto
+usuario: juanro
 contrasena: password123
 HTTP 303

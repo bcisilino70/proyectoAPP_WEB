@@ -1,7 +1,7 @@
 # 1. Loguearse primero para tener sesion
 POST http://localhost:8080/login
 [FormParams]
-usuario: bauto
+usuario: juanro
 contrasena: password123
 HTTP 303
 
