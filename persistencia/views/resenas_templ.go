@@ -8,11 +8,10 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-// Importamos los models de sqlc y strconv (para convertir números)
 import "proyectoAPP_WEB/persistencia/db/sqlc"
 import "strconv"
+import "fmt" // IMPORTANTE: Agrega este import para formatear la URL
 
-// Mis Resenas muestra las reseñas del usuario. necesita un argumento con la lista de reseñas.
 func MisResenas(resenas []db.ListResenasRow) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -34,7 +33,7 @@ func MisResenas(resenas []db.ListResenasRow) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"grid-item\"><h2>Mis Reseñas</h2>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"mis-resenas-wrapper\" class=\"grid-item\"><h2>Mis Reseñas</h2>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -49,7 +48,7 @@ func MisResenas(resenas []db.ListResenasRow) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, resena := range resenas {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"resena-item\"><h3>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, " <div class=\"resena-item\"><h3>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -101,20 +100,20 @@ func MisResenas(resenas []db.ListResenasRow) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</small><div class=\"resena-acciones\"><form action=\"/eliminar-resena\" method=\"POST\" style=\"display: inline;\"><input type=\"hidden\" name=\"resena_id\" value=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</small><div class=\"resena-acciones\"><button hx-delete=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var6 string
-				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(int(resena.ID)))
+				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/resenas/%d", resena.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 28, Col: 106}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 31, Col: 81}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\"> <button type=\"submit\" class=\"btn-eliminar\">Eliminar</button></form></div></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\" hx-target=\"closest .resena-item\" hx-swap=\"outerHTML\" class=\"btn-eliminar\">Eliminar</button></div></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

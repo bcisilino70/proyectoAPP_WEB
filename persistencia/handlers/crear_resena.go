@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	db "proyectoAPP_WEB/persistencia/db/sqlc"
+	"proyectoAPP_WEB/persistencia/views"
 )
 
 // CrearResenaHandler maneja el POST del formulario de nueva resena
@@ -52,14 +53,24 @@ func CrearResenaHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 6. Ejecutar la consulta SQLC para crear la resena
-	//    (queries es la variable global definida en register.go)
-	_, err = queries.CreateResena(r.Context(), params) //
+	_, err = queries.CreateResena(r.Context(), params)
 	if err != nil {
 		log.Printf("Error al crear resena: %v", err)
 		http.Error(w, "No se pudo crear la resena ", http.StatusBadRequest)
 		return
 	}
 
-	// 7. Redirigir al usuario a su panel si todo salio bien
-	http.Redirect(w, r, "/userpage", http.StatusSeeOther)
+	// --- CAMBIO PARA HTMX ---
+
+	// 7. En lugar de redirigir, obtenemos la lista actualizada de este cliente
+	misResenas, err := queries.ListResenas(r.Context(), int32(clienteID))
+	if err != nil {
+		http.Error(w, "Error al actualizar la lista", http.StatusInternalServerError)
+		return
+	}
+
+	// 8. Renderizamos SOLO el componente MisResenas
+	// HTMX tomará este HTML y lo colocará en el hx-target (#mis-resenas)
+	component := views.MisResenas(misResenas)
+	component.Render(r.Context(), w)
 }

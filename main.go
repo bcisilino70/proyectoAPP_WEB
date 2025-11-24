@@ -3,11 +3,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 	"os"
 	"proyectoAPP_WEB/persistencia/handlers"
+
+	_ "github.com/lib/pq"
 )
 
 /*
@@ -48,8 +49,7 @@ func main() {
 
 	//Funcionalidades.
 	http.HandleFunc("/crear-resena", handlers.CrearResenaHandler)
-	http.HandleFunc("/eliminar-resena", handlers.EliminarResenaHandler)
-	http.HandleFunc("/actualizar-email", handlers.ActualizarEmailHandler)
+	http.HandleFunc("/resenas/{id}", handlers.EliminarResenaHandler)
 
 	log.Println("Servidor iniciado en http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {

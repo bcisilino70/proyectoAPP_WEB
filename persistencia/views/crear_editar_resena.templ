@@ -1,34 +1,35 @@
 package views
 
+// Eliminamos el @Layout wrapper porque este componente ya se renderiza dentro de UserPage
 templ CrearEditarResena() {
-    @Layout("Crear o Editar Reseña") {
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Crear o Editar Reseña - Reseñas de Tandil</title>
-            <link rel="stylesheet" href="/styles.css">
-        </head>
-        <body>
-                    <div class="grid-item">
-                        <h2>Crear Reseña</h2>
-                        <p id="cliente-detalle"></p>
-                        <form id="form-resena" action="/crear-resena" method="POST">
-                            <label>Título:
-                                <input type="text" name="titulo" required>
-                            </label>
-                            <label>Descripción:
-                                <textarea name="descripcion" required></textarea>
-                            </label>
-                            <label>Nota (1-5):
-                                <input type="number" name="nota" min="1" max="5" required>
-                            </label>
-                            <div style="display:flex; gap:0.75rem; flex-wrap: wrap;">
-                                <button type="submit">Enviar Reseña</button>
-                                <button type="button" id="btn-cancelar-edicion" style="display:none;" class="btn-secondary">Cancelar edición</button>
-                            </div>
-                        </form>
-                        <p id="mensaje-resena"></p>
-                    </div>
-        </body>
-    }
+    <div class="grid-item">
+        <h2>Crear Reseña</h2>
+        <p id="cliente-detalle"></p>
+        
+        // Formulario con atributos HTMX
+        // hx-post: Envía los datos a /crear-resena sin recargar
+        // hx-target: Actualiza la lista de reseñas (ajustaremos el ID en el siguiente paso)
+        // hx-swap: Reemplaza el componente viejo por el nuevo
+        <form id="form-resena" 
+              hx-post="/crear-resena" 
+              hx-target="#mis-resenas-wrapper" 
+              hx-swap="outerHTML"
+              hx-on::after-request="if(event.detail.successful) this.reset()">
+              
+            <label>Título:
+                <input type="text" name="titulo" required/>
+            </label>
+            <label>Descripción:
+                <textarea name="descripcion" required></textarea>
+            </label>
+            <label>Nota (1-5):
+                <input type="number" name="nota" min="1" max="5" required/>
+            </label>
+            <div style="display:flex; gap:0.75rem; flex-wrap: wrap;">
+                <button type="submit">Enviar Reseña</button>
+                <button type="button" id="btn-cancelar-edicion" style="display:none;" class="btn-secondary">Cancelar edición</button>
+            </div>
+        </form>
+        <p id="mensaje-resena"></p>
+    </div>
 }

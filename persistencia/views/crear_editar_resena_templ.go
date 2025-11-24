@@ -8,6 +8,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+// Eliminamos el @Layout wrapper porque este componente ya se renderiza dentro de UserPage
 func CrearEditarResena() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -29,25 +30,7 @@ func CrearEditarResena() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var2 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-			if !templ_7745c5c3_IsBuffer {
-				defer func() {
-					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-					if templ_7745c5c3_Err == nil {
-						templ_7745c5c3_Err = templ_7745c5c3_BufErr
-					}
-				}()
-			}
-			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Crear o Editar Reseña - Reseñas de Tandil</title><link rel=\"stylesheet\" href=\"/styles.css\"></head><body><div class=\"grid-item\"><h2>Crear Reseña</h2><p id=\"cliente-detalle\"></p><form id=\"form-resena\" action=\"/crear-resena\" method=\"POST\"><label>Título: <input type=\"text\" name=\"titulo\" required></label> <label>Descripción: <textarea name=\"descripcion\" required></textarea></label> <label>Nota (1-5): <input type=\"number\" name=\"nota\" min=\"1\" max=\"5\" required></label><div style=\"display:flex; gap:0.75rem; flex-wrap: wrap;\"><button type=\"submit\">Enviar Reseña</button> <button type=\"button\" id=\"btn-cancelar-edicion\" style=\"display:none;\" class=\"btn-secondary\">Cancelar edición</button></div></form><p id=\"mensaje-resena\"></p></div></body>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			return nil
-		})
-		templ_7745c5c3_Err = Layout("Crear o Editar Reseña").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"grid-item\"><h2>Crear Reseña</h2><p id=\"cliente-detalle\"></p><form id=\"form-resena\" hx-post=\"/crear-resena\" hx-target=\"#mis-resenas-wrapper\" hx-swap=\"outerHTML\" hx-on::after-request=\"if(event.detail.successful) this.reset()\"><label>Título: <input type=\"text\" name=\"titulo\" required></label> <label>Descripción: <textarea name=\"descripcion\" required></textarea></label> <label>Nota (1-5): <input type=\"number\" name=\"nota\" min=\"1\" max=\"5\" required></label><div style=\"display:flex; gap:0.75rem; flex-wrap: wrap;\"><button type=\"submit\">Enviar Reseña</button> <button type=\"button\" id=\"btn-cancelar-edicion\" style=\"display:none;\" class=\"btn-secondary\">Cancelar edición</button></div></form><p id=\"mensaje-resena\"></p></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

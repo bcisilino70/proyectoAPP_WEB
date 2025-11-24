@@ -1,12 +1,11 @@
 package views
 
-// Importamos los models de sqlc y strconv (para convertir números)
 import "proyectoAPP_WEB/persistencia/db/sqlc"
 import "strconv"
+import "fmt" // IMPORTANTE: Agrega este import para formatear la URL
 
-// Mis Resenas muestra las reseñas del usuario. necesita un argumento con la lista de reseñas.
 templ MisResenas(resenas []db.ListResenasRow) {
-    <div class="grid-item">
+    <div id="mis-resenas-wrapper" class="grid-item">
         <h2>Mis Reseñas</h2>
         
         if len(resenas) == 0 {
@@ -16,23 +15,29 @@ templ MisResenas(resenas []db.ListResenasRow) {
         } else {
             <div id="mis-resenas">
                 for _, resena := range resenas {
+                    // Agregamos una clase o ID único si quisieramos, pero 'closest' funciona bien
                     <div class="resena-item">
                         <h3>{ resena.Titulo }</h3>
                         <p>{ resena.Descripcion }</p>
                         <p>Nota: { strconv.Itoa(int(resena.Nota)) }/5</p>
                         <small>Fecha: { resena.Fecha.Format("02-01-2006") }</small>
-                        
+
                         <div class="resena-acciones">
-                            //<button class="btn-editar">Editar</button>
-                            <form action="/eliminar-resena" method="POST" style="display: inline;">
-                                <input type="hidden" name="resena_id" value={ strconv.Itoa(int(resena.ID)) } />
-                                <button type="submit" class="btn-eliminar">Eliminar</button>
-                            </form>
+                            // --- CAMBIO HTMX ---
+                            // 1. hx-delete: Usamos verbo DELETE y URL con ID (/resenas/{id})
+                            // 2. hx-target: "closest .resena-item" busca hacia arriba el padre contenedor
+                            // 3. hx-swap: "outerHTML" reemplaza ese padre por la respuesta vacía (lo borra)
+                            <button 
+                                hx-delete={ fmt.Sprintf("/resenas/%d", resena.ID) }
+                                hx-target="closest .resena-item"
+                                hx-swap="outerHTML"
+                                class="btn-eliminar">
+                                Eliminar
+                            </button>
                         </div>
                     </div>
                 }
             </div>
         }
     </div>
-
 }
