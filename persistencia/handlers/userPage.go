@@ -27,7 +27,7 @@ func UserPageHandler(w http.ResponseWriter, r *http.Request) {
 	// 3. Crear un "username" simple
 	username := "Usuario" + cookie.Value
 
-	// 4. Obtener la lista de "Mis Reseñas" usando sqlc
+	// 4. Obtener la lista de "Mis Resenas" usando sqlc
 	misResenas, err := queries.ListResenas(r.Context(), clienteID)
 	if err != nil {
 		log.Printf("Error al obtener ListResenas: %v", err)
@@ -44,7 +44,6 @@ func UserPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 5. Renderizar el componente principal de la pagina de usuario
-	//    PASANDOLE LOS DATOS OBTENIDOS
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	// Ahora pasamos los slices de resenas al componente Templ

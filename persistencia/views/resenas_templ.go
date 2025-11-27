@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "proyectoAPP_WEB/persistencia/db/sqlc"
 import "strconv"
-import "fmt" // IMPORTANTE: Agrega este import para formatear la URL
+import "fmt"
 
 func MisResenas(resenas []db.ListResenasRow) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -38,7 +38,7 @@ func MisResenas(resenas []db.ListResenasRow) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if len(resenas) == 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div id=\"mis-resenas\" class=\"empty-state\">Todavía no cargaste reseñas.</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div id=\"mis-resenas\" class=\"empty-state\">Todavia no cargaste resenas.</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -48,14 +48,14 @@ func MisResenas(resenas []db.ListResenasRow) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, resena := range resenas {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, " <div class=\"resena-item\"><h3>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"resena-item\"><h3>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(resena.Titulo)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 20, Col: 43}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 19, Col: 43}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 				if templ_7745c5c3_Err != nil {
@@ -68,7 +68,7 @@ func MisResenas(resenas []db.ListResenasRow) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(resena.Descripcion)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 21, Col: 47}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 20, Col: 47}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -81,7 +81,7 @@ func MisResenas(resenas []db.ListResenasRow) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(int(resena.Nota)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 22, Col: 65}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 21, Col: 65}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -94,7 +94,7 @@ func MisResenas(resenas []db.ListResenasRow) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(resena.Fecha.Format("02-01-2006"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 23, Col: 73}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 22, Col: 73}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -107,7 +107,7 @@ func MisResenas(resenas []db.ListResenasRow) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/resenas/%d", resena.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 31, Col: 81}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `persistencia/views/resenas.templ`, Line: 30, Col: 81}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {

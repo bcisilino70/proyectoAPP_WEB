@@ -29,4 +29,4 @@ HTTP 200
 POST http://localhost:8080/actualizar-email
 [FormParams]
 email: nuevo_email@test.com
-HTTP 200
+HTTP 303

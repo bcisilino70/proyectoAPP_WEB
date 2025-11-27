@@ -34,7 +34,7 @@ func ActualizarEmailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 4. Obtener el nuevo email del formulario (el 'name' del input)
+	// 4. Obtener el nuevo email del formulario
 	nuevoEmail := r.FormValue("email")
 	if nuevoEmail == "" {
 		http.Error(w, "El email no puede estar vacio", http.StatusBadRequest)
@@ -42,7 +42,6 @@ func ActualizarEmailHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 5. Preparar los parametros para la consulta SQLC
-	//    (La consulta 'UpdateCliente' espera Email y ID)
 	params := db.UpdateClienteParams{
 		Email: nuevoEmail,
 		ID:    int32(clienteID),
@@ -52,11 +51,10 @@ func ActualizarEmailHandler(w http.ResponseWriter, r *http.Request) {
 	err = queries.UpdateCliente(r.Context(), params)
 	if err != nil {
 		log.Printf("Error al actualizar email: %v", err)
-		// El error más común aquí sería un email duplicado (UNIQUE constraint)
 		http.Error(w, "No se pudo actualizar el email", http.StatusInternalServerError)
 		return
 	}
 
-	// 7. Si todo sale bien, redirigir al usuario a su panel
+	// 7. Redirigir a la pagina de usuario
 	http.Redirect(w, r, "/userpage", http.StatusSeeOther)
 }

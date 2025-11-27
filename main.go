@@ -50,6 +50,7 @@ func main() {
 	//Funcionalidades.
 	http.HandleFunc("/crear-resena", handlers.CrearResenaHandler)
 	http.HandleFunc("/resenas/{id}", handlers.EliminarResenaHandler)
+	http.HandleFunc("/actualizar-email", handlers.ActualizarEmailHandler)
 
 	log.Println("Servidor iniciado en http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {

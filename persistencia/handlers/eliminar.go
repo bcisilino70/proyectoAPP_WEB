@@ -5,27 +5,25 @@ import (
 	"net/http"
 	"strconv"
 
-	// Ya no necesitamos importar "views" porque no vamos a renderizar nada
 	db "proyectoAPP_WEB/persistencia/db/sqlc"
 )
 
 func EliminarResenaHandler(w http.ResponseWriter, r *http.Request) {
-	// 1. Validar Método (aunque el router de Go 1.22+ ya lo hace si pusiste "DELETE ...")
-	// Lo dejamos por seguridad o costumbre.
+	// 1. Validar metodo
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// 2. Obtener el ID de la resena desde la URL (Go 1.22 feature)
+	// 2. Obtener el ID de la resena desde la URL
 	idStr := r.PathValue("id")
 	resenaID, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "ID de reseña inválido", http.StatusBadRequest)
+		http.Error(w, "ID de reseña invalido", http.StatusBadRequest)
 		return
 	}
 
-	// 3. Obtener el ID del cliente desde la cookie (Autenticación)
+	// 3. Obtener el ID del cliente desde la cookie
 	cookie, err := r.Cookie("uid")
 	if err != nil {
 		http.Error(w, "No autenticado", http.StatusUnauthorized)
@@ -33,11 +31,11 @@ func EliminarResenaHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	clienteID, err := strconv.Atoi(cookie.Value)
 	if err != nil {
-		http.Error(w, "ID de usuario inválido", http.StatusBadRequest)
+		http.Error(w, "ID de usuario invalido", http.StatusBadRequest)
 		return
 	}
 
-	// 4. Preparar parámetros
+	// 4. Preparar parametros
 	params := db.DeleteResenaParams{
 		ID:        int32(resenaID),
 		ClienteID: int32(clienteID),
@@ -51,8 +49,6 @@ func EliminarResenaHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 6. RESPUESTA HTMX "VACÍA"
-	// Al enviar 200 OK sin cuerpo, HTMX toma ese "nada" y reemplaza
-	// el target (la tarjeta de la reseña) por "nada", eliminándola visualmente.
+	// 6. Respuesta htmx vacia
 	w.WriteHeader(http.StatusOK)
 }

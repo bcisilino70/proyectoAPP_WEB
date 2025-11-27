@@ -1,13 +1,13 @@
 package views
 
 templ HomePage() {
-    // 1. Usamos el Layout base con un título específico.
+    // 1. Usamos el Layout base con un titulo especifico.
     @Layout("Bienvenido a Reseñas Tandil") {
         // 2. Este es el contenido que se inyecta en el { children... } del Layout.
         <h1 class="page-title">Reseñas de Sitios Turísticos de Tandil</h1>
         <p class="auth-note">Registrate o iniciá sesión para empezar a compartir tus experiencias.</p>
         <main class="auth-layout">
-            // 3. Aquí llamamos a nuestros componentes de formulario.
+            // 3. Aqui llamamos a nuestros componentes de formulario.
             @RegisterForm()
             @LoginForm()
         </main>

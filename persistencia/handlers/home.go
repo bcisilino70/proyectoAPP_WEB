@@ -7,7 +7,7 @@ import (
 )
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	component := views.HomePage()
+	componente := views.HomePage()
 
-	component.Render(r.Context(), w)
+	componente.Render(r.Context(), w)
 }

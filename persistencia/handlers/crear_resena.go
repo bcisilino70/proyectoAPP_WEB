@@ -44,12 +44,11 @@ func CrearResenaHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 5. Preparar los parametros para la consulta SQLC
-	// (Usamos los 'name' de los inputs del formulario)
 	params := db.CreateResenaParams{
-		Titulo:      r.FormValue("titulo"),      //
-		Descripcion: r.FormValue("descripcion"), //
-		Nota:        int32(nota),                //
-		ClienteID:   int32(clienteID),           // ID de la cookie
+		Titulo:      r.FormValue("titulo"),
+		Descripcion: r.FormValue("descripcion"),
+		Nota:        int32(nota),
+		ClienteID:   int32(clienteID), // ID de la cookie
 	}
 
 	// 6. Ejecutar la consulta SQLC para crear la resena
@@ -60,7 +59,7 @@ func CrearResenaHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// --- CAMBIO PARA HTMX ---
+	// ---HTMX ---
 
 	// 7. En lugar de redirigir, obtenemos la lista actualizada de este cliente
 	misResenas, err := queries.ListResenas(r.Context(), int32(clienteID))
@@ -69,8 +68,10 @@ func CrearResenaHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 8. Renderizamos SOLO el componente MisResenas
-	// HTMX tomará este HTML y lo colocará en el hx-target (#mis-resenas)
-	component := views.MisResenas(misResenas)
-	component.Render(r.Context(), w)
+	// 8. Renderizamos el componente MisResenas
+	// HTMX toma este HTML y lo coloca en el hx-target (#mis-resenas)
+	// reemplazando el contenido anterior podriamos hacer lo mismo para las resenas recientes
+	// pero no se cumpliria ni veria la idea de usar htmx para solo renderizar una parte
+	componente := views.MisResenas(misResenas)
+	componente.Render(r.Context(), w)
 }
